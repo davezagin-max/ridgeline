@@ -1,6 +1,6 @@
 "use client";
 
-import { useId, useState, type FormEvent } from "react";
+import { useEffect, useId, useRef, useState, type FormEvent } from "react";
 import { CostMeter } from "@/components/kit/CostMeter";
 import type { ApiMeta } from "@/lib/api";
 import type { RouteConstraints } from "@/lib/plan/constraints";
@@ -88,6 +88,15 @@ export function PlannerPanel({ state, ready, isLive, units, onRun, onCancel, onA
   const working = state.status === "working";
   const activeRequest = state.status === "idle" ? null : state.request;
 
+  // The result lands below the buttons that started it; bring it into view when it changes.
+  const resultRef = useRef<HTMLDivElement>(null);
+  const status = state.status;
+  useEffect(() => {
+    if (status === "idle") return;
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    resultRef.current?.scrollIntoView({ block: "nearest", behavior: reduce ? "auto" : "smooth" });
+  }, [status]);
+
   const submit = (event: FormEvent) => {
     event.preventDefault();
     const request = text.trim();
@@ -152,7 +161,7 @@ export function PlannerPanel({ state, ready, isLive, units, onRun, onCancel, onA
         )}
       </form>
 
-      <div aria-live="polite" className="flex flex-col gap-3">
+      <div ref={resultRef} aria-live="polite" className="flex scroll-mb-3 flex-col gap-3">
         {state.status === "working" && (
           <div className="flex flex-col gap-2 rounded-md border border-border bg-bg p-3">
             <ol className="flex flex-col gap-1 text-xs">

@@ -7,6 +7,36 @@
       "theme": "light",
       "viewport": "desktop",
       "actions": [{ "waitFor": "[data-route='found'][data-shaded='true']" }, { "wait": 1500 }]
+    },
+    {
+      "name": "planner",
+      "path": "/",
+      "theme": "light",
+      "viewport": "desktop",
+      "actions": [
+        { "waitFor": "[data-route='found'][data-shaded='true']" },
+        { "click": "text=2-hour ride with under 2,000 ft" },
+        { "waitFor": "figure" },
+        { "wait": 1200 }
+      ]
+    },
+    {
+      "name": "slope-dark",
+      "path": "/",
+      "theme": "dark",
+      "viewport": "desktop",
+      "actions": [
+        { "waitFor": "[data-route='found'][data-shaded='true']" },
+        { "click": "text=Slope angle" },
+        { "wait": 1500 }
+      ]
+    },
+    {
+      "name": "mobile",
+      "path": "/",
+      "theme": "light",
+      "viewport": "mobile",
+      "actions": [{ "waitFor": "[data-route='found'][data-shaded='true']" }, { "wait": 1500 }]
     }
   ]
 }

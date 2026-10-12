@@ -17,6 +17,7 @@ import { Line2 } from "three/addons/lines/Line2.js";
 import { LineGeometry } from "three/addons/lines/LineGeometry.js";
 import { LineMaterial } from "three/addons/lines/LineMaterial.js";
 import { decimate, elevationAt, lonLatToGrid, type Grid } from "@/lib/terrain/grid";
+import { LABEL_PRIORITY, crowdedLabels, labelWidth, type LabelBox } from "@/lib/terrain/labels";
 import { pickTerrain } from "@/lib/terrain/pick";
 import { MESH_STEP } from "@/lib/worker/protocol";
 import { LandmarkLabel, PointMarker } from "./Markers";
@@ -28,16 +29,6 @@ const CONTOUR_LIFT = 3;
 const SKIRT_DEPTH = 260;
 
 const OVERLAY_ITEM = "absolute left-0 top-0 opacity-0 will-change-transform";
-
-/** Lower numbers claim label space first. */
-const LABEL_PRIORITY: Record<string, number> = {
-  resort: 0,
-  town: 0,
-  pass: 1,
-  trailhead: 2,
-  lake: 2,
-  peak: 3,
-};
 
 interface SceneItem {
   key: string;
@@ -230,7 +221,15 @@ function RouteLine({
 }
 
 /** Orbit, pan and zoom, with touch support; also exposes zoom/rotate/reset for the on-screen buttons. */
-function Controls({ apiRef, home }: { apiRef: RefObject<CameraApi | null>; home: { position: THREE.Vector3; target: THREE.Vector3 } }) {
+function Controls({
+  apiRef,
+  home,
+  inset,
+}: {
+  apiRef: RefObject<CameraApi | null>;
+  home: { position: THREE.Vector3; target: THREE.Vector3 };
+  inset: { left: number; bottom: number };
+}) {
   const get = useThree((state) => state.get);
   const controlsRef = useRef<MapControls | null>(null);
 
@@ -244,9 +243,16 @@ function Controls({ apiRef, home }: { apiRef: RefObject<CameraApi | null>; home:
     controls.maxDistance = 90000;
     controls.maxPolarAngle = Math.PI * 0.46;
     controls.zoomToCursor = true;
-    controls.target.copy(home.target);
-    camera.position.copy(home.position);
-    controls.update();
+    /** The home view, pulled back when the free part of the view is narrow (phones). */
+    const goHome = () => {
+      const { size } = get();
+      const aspect = Math.max(size.width - inset.left, 1) / Math.max(size.height - inset.bottom, 1);
+      const pullBack = aspect >= 1.7 ? 1 : 1 + (1.7 - aspect) * 0.55;
+      controls.target.copy(home.target);
+      camera.position.copy(home.position).sub(home.target).multiplyScalar(pullBack).add(home.target);
+      controls.update();
+    };
+    goHome();
     const onChange = () => invalidate();
     controls.addEventListener("change", onChange);
     controlsRef.current = controls;
@@ -267,9 +273,7 @@ function Controls({ apiRef, home }: { apiRef: RefObject<CameraApi | null>; home:
         invalidate();
       },
       reset() {
-        controls.target.copy(home.target);
-        camera.position.copy(home.position);
-        controls.update();
+        goHome();
         invalidate();
       },
     };
@@ -280,7 +284,7 @@ function Controls({ apiRef, home }: { apiRef: RefObject<CameraApi | null>; home:
       controlsRef.current = null;
       apiRef.current = null;
     };
-  }, [get, apiRef, home]);
+  }, [get, apiRef, home, inset.left, inset.bottom]);
 
   useFrame(() => {
     controlsRef.current?.update();
@@ -347,7 +351,8 @@ function Projector({ items, exaggeration }: { items: SceneItem[]; exaggeration: 
       .closest("[data-terrain-root]")
       ?.querySelector<HTMLElement>("[data-overlay]");
     if (!container) return;
-    const placed: number[] = []; // x0, y0, x1, y1 per label
+    const boxes: LabelBox[] = [];
+    const labelled: HTMLElement[] = [];
     for (const element of container.children as HTMLCollectionOf<HTMLElement>) {
       const item = byKey.get(element.dataset.key ?? "");
       if (!item) continue;
@@ -358,19 +363,15 @@ function Projector({ items, exaggeration }: { items: SceneItem[]; exaggeration: 
       const x = (scratch.x * 0.5 + 0.5) * size.width;
       const y = (-scratch.y * 0.5 + 0.5) * size.height;
       element.style.transform = `translate3d(${x.toFixed(1)}px, ${y.toFixed(1)}px, 0)`;
-
-      const labelWidth = Number(element.dataset.labelWidth ?? 0);
-      if (labelWidth === 0) continue;
-      const box = [x - 8, y - 9, x + labelWidth, y + 9];
-      let crowded = false;
-      for (let i = 0; i < placed.length; i += 4) {
-        if (box[0] < placed[i + 2] && box[2] > placed[i] && box[1] < placed[i + 3] && box[3] > placed[i + 1]) {
-          crowded = true;
-          break;
-        }
+      const width = Number(element.dataset.labelWidth ?? 0);
+      if (width > 0) {
+        boxes.push({ key: item.key, x, y, width });
+        labelled.push(element);
       }
-      element.dataset.crowded = crowded ? "true" : "false";
-      if (!crowded) placed.push(box[0], box[1], box[2], box[3]);
+    }
+    const crowded = crowdedLabels(boxes);
+    for (let i = 0; i < labelled.length; i++) {
+      labelled[i].dataset.crowded = crowded.has(boxes[i].key) ? "true" : "false";
     }
   });
   return null;
@@ -461,7 +462,12 @@ export default function Terrain3D(props: Terrain3DProps) {
   const contourColor = dark ? "#d7b386" : "#6f4520";
 
   return (
-    <div className="absolute inset-0" data-terrain-root>
+    <div
+      className="absolute inset-0"
+      data-terrain-root
+      role="img"
+      aria-label="3D terrain of the central Wasatch with the current route. Drag to pan, scroll or pinch to zoom, or use the camera buttons."
+    >
       <Canvas
         frameloop="demand"
         dpr={[1, 2]}
@@ -484,7 +490,7 @@ export default function Terrain3D(props: Terrain3DProps) {
             </>
           )}
         </group>
-        <Controls apiRef={props.apiRef} home={home} />
+        <Controls apiRef={props.apiRef} home={home} inset={props.inset} />
         <Picker grid={grid} base={base} exaggeration={exaggeration} picking={props.picking} onPick={props.onPick} />
         <Projector items={items} exaggeration={exaggeration} />
         <ViewOffset left={props.inset.left} bottom={props.inset.bottom} />
@@ -512,7 +518,7 @@ export default function Terrain3D(props: Terrain3DProps) {
             <div
               key={landmark.id}
               data-key={`landmark:${landmark.id}`}
-              data-label-width={18 + landmark.name.length * 6.6}
+              data-label-width={labelWidth(landmark.name)}
               className={`${OVERLAY_ITEM} group`}
             >
               <LandmarkLabel landmark={landmark} />

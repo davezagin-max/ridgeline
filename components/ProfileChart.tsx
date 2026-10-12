@@ -22,11 +22,12 @@ export function ProfileChart({ profile, units, position, onScrub }: ProfileChart
     const total = thin.distance[thin.distance.length - 1] || 1;
     let min = Infinity;
     let max = -Infinity;
-    for (const value of thin.elevation) {
+    // The range comes from every sample, so the axis agrees with the route's high point.
+    for (const value of profile.elevation) {
       if (value < min) min = value;
       if (value > max) max = value;
     }
-    const pad = Math.max((max - min) * 0.08, 5);
+    const pad = Math.max((max - min) * 0.1, 5);
     const low = min - pad;
     const span = max + pad - low;
     const points: string[] = [];
@@ -59,57 +60,58 @@ export function ProfileChart({ profile, units, position, onScrub }: ProfileChart
           {readout}
         </p>
       </div>
-      <div
-        className="relative h-20 touch-none select-none sm:h-24"
-        onPointerDown={scrubFromPointer}
-        onPointerMove={scrubFromPointer}
-      >
-        <svg
-          viewBox={`0 0 ${WIDTH} ${HEIGHT}`}
-          preserveAspectRatio="none"
-          className="absolute inset-0 size-full overflow-visible"
-          role="img"
-          aria-label={`Elevation profile from ${formatHeight(chart.min, units)} to ${formatHeight(chart.max, units)} over ${formatDistance(chart.total, units)}`}
+      <div className="flex gap-2">
+        <div className="flex w-14 shrink-0 flex-col justify-between text-right font-mono text-[10px] leading-none text-muted">
+          <span>{formatHeight(chart.max, units)}</span>
+          <span>{formatHeight(chart.min, units)}</span>
+        </div>
+        <div
+          className="relative h-20 min-w-0 flex-1 touch-none select-none sm:h-24"
+          onPointerDown={scrubFromPointer}
+          onPointerMove={scrubFromPointer}
         >
-          <path d={chart.area} fill="var(--accent)" opacity="0.2" />
-          <path
-            d={chart.line}
-            fill="none"
-            stroke="var(--accent)"
-            strokeWidth="1.75"
-            vectorEffect="non-scaling-stroke"
-            strokeLinejoin="round"
+          <svg
+            viewBox={`0 0 ${WIDTH} ${HEIGHT}`}
+            preserveAspectRatio="none"
+            className="absolute inset-0 size-full"
+            role="img"
+            aria-label={`Elevation profile from ${formatHeight(chart.min, units)} to ${formatHeight(chart.max, units)} over ${formatDistance(chart.total, units)}`}
+          >
+            <path d={chart.area} fill="var(--accent)" opacity="0.2" />
+            <path
+              d={chart.line}
+              fill="none"
+              stroke="var(--accent)"
+              strokeWidth="1.75"
+              vectorEffect="non-scaling-stroke"
+              strokeLinejoin="round"
+            />
+          </svg>
+          <span
+            className="pointer-events-none absolute bottom-0 top-0 w-px bg-route"
+            style={{ left: `${position * 100}%` }}
           />
-        </svg>
-        <span className="pointer-events-none absolute left-1 top-0 rounded bg-panel px-1 font-mono text-[10px] text-muted">
-          {formatHeight(chart.max, units)}
-        </span>
-        <span className="pointer-events-none absolute bottom-0 left-1 rounded bg-panel px-1 font-mono text-[10px] text-muted">
-          {formatHeight(chart.min, units)}
-        </span>
-        <span className="pointer-events-none absolute bottom-0 right-1 rounded bg-panel px-1 font-mono text-[10px] text-muted">
-          {formatDistance(chart.total, units)}
-        </span>
-        <span
-          className="pointer-events-none absolute bottom-0 top-0 w-px bg-route"
-          style={{ left: `${position * 100}%` }}
-        />
-        <span
-          className="pointer-events-none absolute size-2.5 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-bg bg-route"
-          style={{ left: `${position * 100}%`, top: markerTop }}
-        />
+          <span
+            className="pointer-events-none absolute size-2.5 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-bg bg-route"
+            style={{ left: `${position * 100}%`, top: markerTop }}
+          />
+        </div>
       </div>
-      <input
-        type="range"
-        min={0}
-        max={1000}
-        step={1}
-        value={Math.round(position * 1000)}
-        onChange={(event) => onScrub(Number(event.target.value) / 1000)}
-        className="scrubber"
-        aria-label="Position along the route"
-        aria-valuetext={readout}
-      />
+      <div className="flex items-center gap-2">
+        <span className="w-14 shrink-0 text-right font-mono text-[10px] text-muted">0</span>
+        <input
+          type="range"
+          min={0}
+          max={1000}
+          step={1}
+          value={Math.round(position * 1000)}
+          onChange={(event) => onScrub(Number(event.target.value) / 1000)}
+          className="scrubber min-w-0 flex-1"
+          aria-label="Position along the route"
+          aria-valuetext={readout}
+        />
+        <span className="shrink-0 font-mono text-[10px] text-muted">{formatDistance(chart.total, units)}</span>
+      </div>
     </div>
   );
 }

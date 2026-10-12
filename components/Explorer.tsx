@@ -98,9 +98,7 @@ function snapToLandmark(col: number, row: number): RoutePoint {
 
 const PICK_HINT: Record<PickTarget, string> = {
   start: "Click the map to set the start.",
-  goal: "Click the map to set the end.",
-  "both-start": "Click the map to set the start.",
-  "both-goal": "Now click the end.",
+  goal: "Now click the end.",
 };
 
 export function Explorer() {
@@ -239,9 +237,9 @@ export function Explorer() {
   const handlePick = useCallback(
     (col: number, row: number) => {
       const point = snapToLandmark(col, row);
-      if (picking === "start" || picking === "both-start") updateSpec({ start: point });
-      else if (picking === "goal" || picking === "both-goal") updateSpec({ goal: point });
-      setPicking(picking === "both-start" ? "both-goal" : null);
+      if (picking === "start") updateSpec({ start: point });
+      else if (picking === "goal") updateSpec({ goal: point });
+      setPicking(picking === "start" ? "goal" : null);
     },
     [picking, updateSpec],
   );
@@ -294,7 +292,7 @@ export function Explorer() {
       data-view={view}
     >
       <div
-        className="relative h-[40svh] min-h-64 shrink-0 overflow-hidden lg:absolute lg:inset-0 lg:h-auto"
+        className="relative isolate h-[40svh] min-h-64 shrink-0 overflow-hidden lg:absolute lg:inset-0 lg:h-auto"
         style={{ background: "linear-gradient(var(--sky-top), var(--sky-bottom))" }}
       >
         {terrain.status === "loading" && <MapMessage>Loading 1.3 MB of Wasatch elevation…</MapMessage>}

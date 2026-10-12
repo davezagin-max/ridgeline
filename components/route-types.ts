@@ -33,7 +33,8 @@ export interface RouteView {
   planned: boolean;
 }
 
-export type PickTarget = "start" | "goal" | "both-start" | "both-goal";
+/** Which end the next click on the map sets. Picking always goes start, then end. */
+export type PickTarget = "start" | "goal";
 
 export function landmarkPoint(meta: GridMeta, id: string): RoutePoint {
   const landmark = findLandmark(id);

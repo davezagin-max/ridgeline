@@ -38,58 +38,42 @@ function PointSelect({
   point,
   meta,
   onSelect,
-  onPick,
-  picking,
 }: {
   label: string;
   point: RoutePoint;
   meta: GridMeta;
   onSelect: (point: RoutePoint) => void;
-  onPick: () => void;
-  picking: boolean;
 }) {
   const id = useId();
   const position = gridToLonLat(meta, point.col, point.row);
   return (
-    <div className="flex min-w-0 items-end gap-1.5">
-      <div className="flex min-w-0 flex-1 flex-col gap-1">
-        <label htmlFor={id} className="text-[11px] font-medium uppercase tracking-wide text-muted">
-          {label}
-        </label>
-        <select
-          id={id}
-          value={point.landmarkId ?? MAP_POINT}
-          onChange={(event) => {
-            if (event.target.value !== MAP_POINT) onSelect(landmarkPoint(meta, event.target.value));
-          }}
-          className="w-full min-w-0 rounded-md border border-border bg-bg px-2 py-1.5 text-sm"
-        >
-          {point.landmarkId === null && (
-            <option value={MAP_POINT}>
-              Map point ({position.lat.toFixed(3)}, {position.lon.toFixed(3)})
-            </option>
-          )}
-          {GROUPS.map((group) => (
-            <optgroup key={group.label} label={group.label}>
-              {LANDMARKS.filter((landmark) => group.kind.includes(landmark.kind)).map((landmark) => (
-                <option key={landmark.id} value={landmark.id}>
-                  {landmark.name}
-                </option>
-              ))}
-            </optgroup>
-          ))}
-        </select>
-      </div>
-      <button
-        type="button"
-        onClick={onPick}
-        aria-pressed={picking}
-        className={`shrink-0 rounded-md border px-2 py-1.5 text-xs font-medium ${
-          picking ? "border-accent bg-accent text-accent-fg" : "border-border hover:bg-surface"
-        }`}
+    <div className="flex min-w-0 flex-col gap-1">
+      <label htmlFor={id} className="text-[11px] font-medium uppercase tracking-wide text-muted">
+        {label}
+      </label>
+      <select
+        id={id}
+        value={point.landmarkId ?? MAP_POINT}
+        onChange={(event) => {
+          if (event.target.value !== MAP_POINT) onSelect(landmarkPoint(meta, event.target.value));
+        }}
+        className="w-full min-w-0 rounded-md border border-border bg-bg px-2 py-1.5 text-sm"
       >
-        {picking ? "Click map" : "Pick"}
-      </button>
+        {point.landmarkId === null && (
+          <option value={MAP_POINT}>
+            Map point ({position.lat.toFixed(3)}, {position.lon.toFixed(3)})
+          </option>
+        )}
+        {GROUPS.map((group) => (
+          <optgroup key={group.label} label={group.label}>
+            {LANDMARKS.filter((landmark) => group.kind.includes(landmark.kind)).map((landmark) => (
+              <option key={landmark.id} value={landmark.id}>
+                {landmark.name}
+              </option>
+            ))}
+          </optgroup>
+        ))}
+      </select>
     </div>
   );
 }
@@ -97,7 +81,6 @@ function PointSelect({
 export function RoutePanel({ meta, spec, route, ready, units, picking, onChange, onPick }: RoutePanelProps) {
   const gradeId = useId();
   const stats = route?.found ? route.stats : null;
-  const pickingBoth = picking === "both-start" || picking === "both-goal";
 
   return (
     <Section title="Route" aside="A* on the elevation grid">
@@ -113,34 +96,22 @@ export function RoutePanel({ meta, spec, route, ready, units, picking, onChange,
       />
 
       <div className="flex flex-col gap-2">
-        <PointSelect
-          label="From"
-          point={spec.start}
-          meta={meta}
-          onSelect={(start) => onChange({ start })}
-          onPick={() => onPick(picking === "start" ? null : "start")}
-          picking={picking === "start"}
-        />
-        <PointSelect
-          label="To"
-          point={spec.goal}
-          meta={meta}
-          onSelect={(goal) => onChange({ goal })}
-          onPick={() => onPick(picking === "goal" ? null : "goal")}
-          picking={picking === "goal"}
-        />
+        <div className="grid grid-cols-2 gap-2">
+          <PointSelect label="From" point={spec.start} meta={meta} onSelect={(start) => onChange({ start })} />
+          <PointSelect label="To" point={spec.goal} meta={meta} onSelect={(goal) => onChange({ goal })} />
+        </div>
         <div className="flex flex-wrap gap-2">
           <button
             type="button"
-            onClick={() => onPick(pickingBoth ? null : "both-start")}
-            aria-pressed={pickingBoth}
+            onClick={() => onPick(picking ? null : "start")}
+            aria-pressed={picking !== null}
             className={`rounded-md border px-2.5 py-1.5 text-xs font-medium ${
-              pickingBoth ? "border-accent bg-accent text-accent-fg" : "border-border hover:bg-surface"
+              picking ? "border-accent bg-accent text-accent-fg" : "border-border hover:bg-surface"
             }`}
           >
-            {picking === "both-start"
+            {picking === "start"
               ? "Click the start…"
-              : picking === "both-goal"
+              : picking === "goal"
                 ? "Now click the end…"
                 : "Click two points on the map"}
           </button>
