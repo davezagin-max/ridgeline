@@ -121,7 +121,8 @@ export function usePlanner(options: {
 
       // Whatever the source (model or fixture), constraints are validated before they are used.
       const checked = checkConstraints(first.data);
-      if (!checked.ok) return fail("server", `The constraints were not usable. ${checked.error}`, first.meta);
+      if (!checked.ok)
+        return fail("server", `The constraints were not usable. ${checked.error}`, first.meta);
       const constraints = checked.constraints;
 
       setState({ status: "working", step: "routing", request, constraints });
@@ -129,7 +130,8 @@ export function usePlanner(options: {
       try {
         plan = await worker.call("plan", { constraints });
       } catch {
-        if (current()) fail("server", "The router stopped unexpectedly. Reload the page.", first.meta);
+        if (current())
+          fail("server", "The router stopped unexpectedly. Reload the page.", first.meta);
         return;
       }
       if (!current()) return;

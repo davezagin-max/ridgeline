@@ -10,13 +10,14 @@
  *       { "name": "hero", "path": "/", "theme": "light", "viewport": "desktop",
  *         "actions": [{ "click": "text=Run" }, { "waitFor": "#result" }, { "wait": 400 }] }
  *     ],
- *     "gif": { "path": "/", "theme": "dark", "actions": [ ... ] }
+ *     "gif": { "path": "/", "theme": "dark", "actions": [ ... ] },
+ *     "maxWidth": 1600
  *   }
  * Actions: click, fill ([selector, text]), press, hover, waitFor (selector), wait (ms), scroll (px).
  * Output goes to docs/<name>.png and docs/demo.gif. The GIF needs ffmpeg on PATH.
  */
 import { execFileSync, spawn } from "node:child_process";
-import { mkdirSync, readFileSync, rmSync } from "node:fs";
+import { mkdirSync, readFileSync, renameSync, rmSync } from "node:fs";
 import path from "node:path";
 import { chromium } from "playwright";
 
@@ -84,6 +85,26 @@ async function open(browser, spec, extra = {}) {
   return { context, page, viewport };
 }
 
+/**
+ * Optional "maxWidth" in screenshots.json: wider captures are scaled down with
+ * ffmpeg so a photographic page (shaded terrain) does not put megabytes in the repo.
+ */
+function shrink(file) {
+  if (!config.maxWidth) return;
+  const scaled = `${file}.scaled.png`;
+  try {
+    execFileSync(
+      "ffmpeg",
+      ["-y", "-i", file, "-vf", `scale='min(${config.maxWidth},iw)':-2:flags=lanczos`, scaled],
+      { stdio: "ignore" },
+    );
+    renameSync(scaled, file);
+  } catch {
+    rmSync(scaled, { force: true });
+    console.warn(`ffmpeg not available: left ${file} at full size.`);
+  }
+}
+
 const browser = await chromium.launch();
 try {
   for (const shot of config.shots ?? []) {
@@ -92,6 +113,7 @@ try {
     const file = path.join(out, `${shot.name}.png`);
     await page.screenshot({ path: file, fullPage: Boolean(shot.fullPage) });
     await context.close();
+    shrink(file);
     console.log(`wrote ${file}`);
   }
 

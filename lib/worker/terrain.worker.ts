@@ -11,7 +11,10 @@ declare const self: DedicatedWorkerGlobalScope;
 
 let state: TerrainState | null = null;
 
-function handle(message: WorkerRequest): { result: Calls[keyof Calls]["response"]; transfer: Transferable[] } {
+function handle(message: WorkerRequest): {
+  result: Calls[keyof Calls]["response"];
+  transfer: Transferable[];
+} {
   if (message.type === "init") {
     const { buffer, meta } = message.payload as Calls["init"]["request"];
     state = createState(buffer, meta);

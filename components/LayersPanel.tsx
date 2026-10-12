@@ -32,14 +32,19 @@ interface LayersPanelProps {
 }
 
 export function LayersPanel(props: LayersPanelProps) {
-  const { layers, onLayers, exaggeration, onExaggeration, units, onUnits, view, onView, webgl } = props;
+  const { layers, onLayers, exaggeration, onExaggeration, units, onUnits, view, onView, webgl } =
+    props;
   const intervalId = useId();
   const exaggerationId = useId();
 
   return (
     <Section title="Layers">
       <div className="flex flex-col gap-2">
-        <Toggle label="Hillshade" checked={layers.hillshade} onChange={(hillshade) => onLayers({ hillshade })} />
+        <Toggle
+          label="Hillshade"
+          checked={layers.hillshade}
+          onChange={(hillshade) => onLayers({ hillshade })}
+        />
         <Toggle
           label="Slope angle"
           checked={layers.slopeBands}
@@ -59,13 +64,17 @@ export function LayersPanel(props: LayersPanelProps) {
               ))}
             </ul>
             <p className="text-[11px] leading-snug text-muted">
-              Angles are measured across 31 m cells, which smooths out short steep pitches. This is a
-              picture of the terrain, not an avalanche assessment.
+              Angles are measured across 31 m cells, which smooths out short steep pitches. This is
+              a picture of the terrain, not an avalanche assessment.
             </p>
           </div>
         )}
         <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
-          <Toggle label="Contours" checked={layers.contours} onChange={(contours) => onLayers({ contours })} />
+          <Toggle
+            label="Contours"
+            checked={layers.contours}
+            onChange={(contours) => onLayers({ contours })}
+          />
           <label htmlFor={intervalId} className="sr-only">
             Contour interval
           </label>
@@ -83,10 +92,16 @@ export function LayersPanel(props: LayersPanelProps) {
             ))}
           </select>
           {layers.contours && props.contourLevels !== null && (
-            <span className="text-[11px] text-muted">{props.contourLevels} levels, marching squares</span>
+            <span className="text-[11px] text-muted">
+              {props.contourLevels} levels, marching squares
+            </span>
           )}
         </div>
-        <Toggle label="Place names" checked={layers.labels} onChange={(labels) => onLayers({ labels })} />
+        <Toggle
+          label="Place names"
+          checked={layers.labels}
+          onChange={(labels) => onLayers({ labels })}
+        />
       </div>
 
       {view === "3d" && (
@@ -140,7 +155,8 @@ export function LayersPanel(props: LayersPanelProps) {
       </div>
       {!webgl && (
         <p className="text-[11px] text-muted">
-          This browser has no WebGL, so the terrain is shown as a flat map. Everything else works the same.
+          This browser has no WebGL, so the terrain is shown as a flat map. Everything else works
+          the same.
         </p>
       )}
     </Section>

@@ -76,18 +76,21 @@ describe("fixtures validate against the real pipeline", () => {
     expect(new Set(ids).size).toBe(3);
   });
 
-  it.each(PLANNER_PRESETS.map((preset) => preset.demoId))("%s: constraints pass the validator and route", (demoId) => {
-    const fixture = plans[demoId];
-    expectHonestFlags(fixture);
-    const checked = checkConstraints(fixture.data);
-    expect(checked.ok).toBe(true);
-    if (!checked.ok) return;
-    // Stored constraints are already in canonical form: validating changes nothing.
-    expect(checked.constraints).toEqual(fixture.data);
-    const plan = planRoute(router, meta, checked.constraints);
-    expect(plan.found).toBe(true);
-    expect(plan.stats!.distanceM).toBeGreaterThan(1000);
-  });
+  it.each(PLANNER_PRESETS.map((preset) => preset.demoId))(
+    "%s: constraints pass the validator and route",
+    (demoId) => {
+      const fixture = plans[demoId];
+      expectHonestFlags(fixture);
+      const checked = checkConstraints(fixture.data);
+      expect(checked.ok).toBe(true);
+      if (!checked.ok) return;
+      // Stored constraints are already in canonical form: validating changes nothing.
+      expect(checked.constraints).toEqual(fixture.data);
+      const plan = planRoute(router, meta, checked.constraints);
+      expect(plan.found).toBe(true);
+      expect(plan.stats!.distanceM).toBeGreaterThan(1000);
+    },
+  );
 
   it.each(PLANNER_PRESETS.map((preset) => preset.demoId))(
     "%s: narration quotes only what the router computes for it",

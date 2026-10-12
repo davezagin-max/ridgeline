@@ -154,9 +154,15 @@ describe("planning on the real heightmap", () => {
     expect(plan.maxGrade).toBe(DEFAULT_ROUTE_OPTIONS.maxGrade);
     expect(plan.checks).toEqual([]);
     expect(plan.path[0]).toBe(landmarkNode(grid, meta, findLandmark("alta")!));
-    expect(plan.path[plan.path.length - 1]).toBe(landmarkNode(grid, meta, findLandmark("brighton")!));
+    expect(plan.path[plan.path.length - 1]).toBe(
+      landmarkNode(grid, meta, findLandmark("brighton")!),
+    );
     // The plan is exactly what the router returns for the same options.
-    const direct = router.search(plan.path[0], plan.path[plan.path.length - 1], optionsFor("climb-friendly"));
+    const direct = router.search(
+      plan.path[0],
+      plan.path[plan.path.length - 1],
+      optionsFor("climb-friendly"),
+    );
     expect(Array.from(plan.path)).toEqual(Array.from(direct.path));
     expect(plan.stats).toEqual(routeStats(grid, direct.path, "hike"));
   });
@@ -230,7 +236,9 @@ describe("planning on the real heightmap", () => {
       if (out.length < 2) continue;
       const stats = routeStats(grid, roundTripPath(out), "ride");
       if (stats.climbM <= 609.6) {
-        expect(Math.abs(stats.minutes - 120), landmark.id).toBeGreaterThanOrEqual(chosenMiss - 1e-9);
+        expect(Math.abs(stats.minutes - 120), landmark.id).toBeGreaterThanOrEqual(
+          chosenMiss - 1e-9,
+        );
       }
     }
     const durationCheck = plan.checks[1];
@@ -254,7 +262,11 @@ describe("planning on the real heightmap", () => {
 
   it("refuses unknown landmarks without searching", () => {
     const plan = planRoute(router, meta, { ...base, start: "atlantis" });
-    expect(plan).toMatchObject({ found: false, searches: 0, reason: "That place is not on this map." });
+    expect(plan).toMatchObject({
+      found: false,
+      searches: 0,
+      reason: "That place is not on this map.",
+    });
   });
 
   it("round trips mirror the outbound path", () => {
@@ -309,7 +321,10 @@ describe("facts and the narration check", () => {
 
   it("rejects a narration with a figure the router did not produce", () => {
     const check = checkNarration(
-      { title: "A loop", narration: `About 12 miles and ${facts.climb} of climbing, roughly 3 hours.` },
+      {
+        title: "A loop",
+        narration: `About 12 miles and ${facts.climb} of climbing, roughly 3 hours.`,
+      },
       facts,
     );
     expect(check.ok).toBe(false);
@@ -319,7 +334,9 @@ describe("facts and the narration check", () => {
   it("rejects a rounded or converted figure", () => {
     const [value] = numerals(facts.distance);
     const rounded = String(Math.round(Number(value)) + 40);
-    expect(checkNarration({ title: "Loop", narration: `Roughly ${rounded} miles.` }, facts).ok).toBe(false);
+    expect(
+      checkNarration({ title: "Loop", narration: `Roughly ${rounded} miles.` }, facts).ok,
+    ).toBe(false);
   });
 
   it("rejects empty and overlong text", () => {
@@ -355,7 +372,8 @@ describe("worker handlers", () => {
     expect(result.minor.length).toBeGreaterThan(result.index.length);
     // Index contours are every 500 m: their heights above the base are 1500, 2000, ... minus the base.
     const heights = new Set<number>();
-    for (let i = 1; i < result.index.length; i += 3) heights.add(Math.round(result.index[i] + meta.minElevation));
+    for (let i = 1; i < result.index.length; i += 3)
+      heights.add(Math.round(result.index[i] + meta.minElevation));
     expect([...heights].sort((a, b) => a - b)).toEqual([1500, 2000, 2500, 3000]);
     // Every vertex is inside the map's footprint.
     const halfX = ((meta.width - 1) / 2) * meta.cellX;
@@ -367,7 +385,13 @@ describe("worker handlers", () => {
   it("routes between nodes and doubles the path for a round trip", () => {
     const start = landmarkNode(state.grid, meta, findLandmark("alta")!);
     const goal = landmarkNode(state.grid, meta, findLandmark("cecret-lake")!);
-    const request = { start, goal, mode: "climb-friendly" as const, maxGrade: 0.3, activity: "hike" as const };
+    const request = {
+      start,
+      goal,
+      mode: "climb-friendly" as const,
+      maxGrade: 0.3,
+      activity: "hike" as const,
+    };
     const oneWay = route(state, { ...request, roundTrip: false });
     const both = route(state, { ...request, roundTrip: true });
     expect(oneWay.found).toBe(true);

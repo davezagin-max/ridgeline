@@ -11,7 +11,13 @@ import {
   formatHeight,
   type Units,
 } from "@/lib/terrain/units";
-import { landmarkPoint, type PickTarget, type RoutePoint, type RouteSpec, type RouteView } from "./route-types";
+import {
+  landmarkPoint,
+  type PickTarget,
+  type RoutePoint,
+  type RouteSpec,
+  type RouteView,
+} from "./route-types";
 import { Section, Segmented, Stat, Toggle } from "./ui";
 
 const GROUPS: { kind: LandmarkKind[]; label: string }[] = [
@@ -78,7 +84,16 @@ function PointSelect({
   );
 }
 
-export function RoutePanel({ meta, spec, route, ready, units, picking, onChange, onPick }: RoutePanelProps) {
+export function RoutePanel({
+  meta,
+  spec,
+  route,
+  ready,
+  units,
+  picking,
+  onChange,
+  onPick,
+}: RoutePanelProps) {
   const gradeId = useId();
   const stats = route?.found ? route.stats : null;
 
@@ -97,8 +112,18 @@ export function RoutePanel({ meta, spec, route, ready, units, picking, onChange,
 
       <div className="flex flex-col gap-2">
         <div className="grid grid-cols-2 gap-2">
-          <PointSelect label="From" point={spec.start} meta={meta} onSelect={(start) => onChange({ start })} />
-          <PointSelect label="To" point={spec.goal} meta={meta} onSelect={(goal) => onChange({ goal })} />
+          <PointSelect
+            label="From"
+            point={spec.start}
+            meta={meta}
+            onSelect={(start) => onChange({ start })}
+          />
+          <PointSelect
+            label="To"
+            point={spec.goal}
+            meta={meta}
+            onSelect={(goal) => onChange({ goal })}
+          />
         </div>
         <div className="flex flex-wrap gap-2">
           <button

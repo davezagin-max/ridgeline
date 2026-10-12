@@ -39,7 +39,9 @@ describe("demo mode, end to end", () => {
 
   it.each(PLANNER_PRESETS)("$demoId: preset to drawn route to narration", async (preset) => {
     // Step 1: request to constraints, replayed from the fixture.
-    const first = await planPost(post("/api/plan-route", { demoId: preset.demoId, request: preset.request }));
+    const first = await planPost(
+      post("/api/plan-route", { demoId: preset.demoId, request: preset.request }),
+    );
     const constraints = (await first.json()) as ApiResponse<RouteConstraints>;
     expect(first.status).toBe(200);
     if (!constraints.ok) throw new Error(constraints.error.message);

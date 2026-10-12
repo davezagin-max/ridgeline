@@ -119,7 +119,12 @@ function buildTerrain(grid: Grid, base: number) {
   return { surface, skirt, coarse };
 }
 
-function Terrain({ grid, base, pixels, dark }: Pick<MapViewProps, "grid" | "pixels" | "dark"> & { base: number }) {
+function Terrain({
+  grid,
+  base,
+  pixels,
+  dark,
+}: Pick<MapViewProps, "grid" | "pixels" | "dark"> & { base: number }) {
   const { surface, skirt } = useMemo(() => buildTerrain(grid, base), [grid, base]);
   const texture = useMemo(() => {
     if (!pixels) return null;
@@ -166,7 +171,15 @@ function Terrain({ grid, base, pixels, dark }: Pick<MapViewProps, "grid" | "pixe
   );
 }
 
-function ContourLines({ positions, color, opacity }: { positions: Float32Array<ArrayBuffer>; color: string; opacity: number }) {
+function ContourLines({
+  positions,
+  color,
+  opacity,
+}: {
+  positions: Float32Array<ArrayBuffer>;
+  color: string;
+  opacity: number;
+}) {
   const geometry = useMemo(() => {
     const next = new THREE.BufferGeometry();
     next.setAttribute("position", new THREE.BufferAttribute(positions, 3));
@@ -249,7 +262,11 @@ function Controls({
       const aspect = Math.max(size.width - inset.left, 1) / Math.max(size.height - inset.bottom, 1);
       const pullBack = aspect >= 1.7 ? 1 : 1 + (1.7 - aspect) * 0.55;
       controls.target.copy(home.target);
-      camera.position.copy(home.position).sub(home.target).multiplyScalar(pullBack).add(home.target);
+      camera.position
+        .copy(home.position)
+        .sub(home.target)
+        .multiplyScalar(pullBack)
+        .add(home.target);
       controls.update();
     };
     goHome();
@@ -261,13 +278,19 @@ function Controls({
     apiRef.current = {
       zoom(factor) {
         offset.copy(camera.position).sub(controls.target).multiplyScalar(factor);
-        const length = Math.min(Math.max(offset.length(), controls.minDistance), controls.maxDistance);
+        const length = Math.min(
+          Math.max(offset.length(), controls.minDistance),
+          controls.maxDistance,
+        );
         camera.position.copy(controls.target).add(offset.setLength(length));
         controls.update();
         invalidate();
       },
       rotate(radians) {
-        offset.copy(camera.position).sub(controls.target).applyAxisAngle(THREE.Object3D.DEFAULT_UP, radians);
+        offset
+          .copy(camera.position)
+          .sub(controls.target)
+          .applyAxisAngle(THREE.Object3D.DEFAULT_UP, radians);
         camera.position.copy(controls.target).add(offset);
         controls.update();
         invalidate();
@@ -293,7 +316,13 @@ function Controls({
 }
 
 /** Turns a click (not a drag) into a grid position by intersecting the view ray with the heightfield. */
-function Picker({ grid, base, exaggeration, picking, onPick }: Pick<MapViewProps, "grid" | "exaggeration" | "picking" | "onPick"> & { base: number }) {
+function Picker({
+  grid,
+  base,
+  exaggeration,
+  picking,
+  onPick,
+}: Pick<MapViewProps, "grid" | "exaggeration" | "picking" | "onPick"> & { base: number }) {
   const get = useThree((state) => state.get);
   useEffect(() => {
     if (!picking) return;
@@ -401,7 +430,20 @@ interface Terrain3DProps extends MapViewProps {
 }
 
 export default function Terrain3D(props: Terrain3DProps) {
-  const { grid, meta, pixels, contours, path, start, goal, marker, landmarks, showLabels, exaggeration, dark } = props;
+  const {
+    grid,
+    meta,
+    pixels,
+    contours,
+    path,
+    start,
+    goal,
+    marker,
+    landmarks,
+    showLabels,
+    exaggeration,
+    dark,
+  } = props;
   const base = meta.minElevation;
   const coarse = useMemo(() => decimate(grid, MESH_STEP), [grid]);
 
@@ -414,7 +456,8 @@ export default function Terrain3D(props: Terrain3DProps) {
   /** Height of the drawn surface (the coarse mesh), so overlays sit on what is visible. */
   const surfaceY = useMemo(
     () => (col: number, row: number) =>
-      Math.max(elevationAt(coarse, col / MESH_STEP, row / MESH_STEP), elevationAt(grid, col, row)) - base,
+      Math.max(elevationAt(coarse, col / MESH_STEP, row / MESH_STEP), elevationAt(grid, col, row)) -
+      base,
     [coarse, grid, base],
   );
 
@@ -478,26 +521,49 @@ export default function Terrain3D(props: Terrain3DProps) {
         <group scale={[1, exaggeration, 1]}>
           <Terrain grid={grid} base={base} pixels={pixels} dark={dark} />
           {contours && contours.minor.length > 0 && (
-            <ContourLines positions={contours.minor} color={contourColor} opacity={dark ? 0.3 : 0.38} />
+            <ContourLines
+              positions={contours.minor}
+              color={contourColor}
+              opacity={dark ? 0.3 : 0.38}
+            />
           )}
           {contours && contours.index.length > 0 && (
-            <ContourLines positions={contours.index} color={contourColor} opacity={dark ? 0.75 : 0.85} />
+            <ContourLines
+              positions={contours.index}
+              color={contourColor}
+              opacity={dark ? 0.75 : 0.85}
+            />
           )}
           {routePoints && (
             <>
-              <RouteLine points={routePoints} color={dark ? "#0c0f0c" : "#ffffff"} width={8} casing />
+              <RouteLine
+                points={routePoints}
+                color={dark ? "#0c0f0c" : "#ffffff"}
+                width={8}
+                casing
+              />
               <RouteLine points={routePoints} color={routeColor} width={4.5} casing={false} />
             </>
           )}
         </group>
         <Controls apiRef={props.apiRef} home={home} inset={props.inset} />
-        <Picker grid={grid} base={base} exaggeration={exaggeration} picking={props.picking} onPick={props.onPick} />
+        <Picker
+          grid={grid}
+          base={base}
+          exaggeration={exaggeration}
+          picking={props.picking}
+          onPick={props.onPick}
+        />
         <Projector items={items} exaggeration={exaggeration} />
         <ViewOffset left={props.inset.left} bottom={props.inset.bottom} />
       </Canvas>
 
       {/* Labels and markers are DOM, positioned by the Projector above. Order is priority. */}
-      <div data-overlay className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden>
+      <div
+        data-overlay
+        className="pointer-events-none absolute inset-0 overflow-hidden"
+        aria-hidden
+      >
         {start && (
           <div data-key="start" data-label-width="14" className={`${OVERLAY_ITEM} z-10`}>
             <PointMarker kind="start" />

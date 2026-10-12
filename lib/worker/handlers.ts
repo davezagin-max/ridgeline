@@ -89,7 +89,13 @@ export function route(state: TerrainState, request: RouteRequest): RouteResponse
     optionsFor(request.mode, request.maxGrade),
   );
   if (!result.found) {
-    return { found: false, path: new Int32Array(0), stats: null, expanded: result.expanded, ms: now() - started };
+    return {
+      found: false,
+      path: new Int32Array(0),
+      stats: null,
+      expanded: result.expanded,
+      ms: now() - started,
+    };
   }
   const path = request.roundTrip ? roundTripPath(result.path) : result.path;
   return {
@@ -107,6 +113,9 @@ export function plan(state: TerrainState, request: Calls["plan"]["request"]): Pl
   return { ...result, ms: now() - started };
 }
 
-export function shade(state: TerrainState, options: Calls["shade"]["request"]): Calls["shade"]["response"] {
+export function shade(
+  state: TerrainState,
+  options: Calls["shade"]["request"],
+): Calls["shade"]["response"] {
   return { pixels: shadeTerrain(state.grid, options) };
 }

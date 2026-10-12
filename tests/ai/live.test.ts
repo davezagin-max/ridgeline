@@ -16,13 +16,15 @@ import presets from "@/fixtures/presets.json";
 function fakeClient(responses: object[]) {
   const requests: Record<string, unknown>[] = [];
   const signals: (AbortSignal | undefined)[] = [];
-  const create = vi.fn(async (params: Record<string, unknown>, options?: { signal?: AbortSignal }) => {
-    requests.push(structuredClone(params));
-    signals.push(options?.signal);
-    const next = responses.shift();
-    if (!next) throw new Error("No more fake responses");
-    return next;
-  });
+  const create = vi.fn(
+    async (params: Record<string, unknown>, options?: { signal?: AbortSignal }) => {
+      requests.push(structuredClone(params));
+      signals.push(options?.signal);
+      const next = responses.shift();
+      if (!next) throw new Error("No more fake responses");
+      return next;
+    },
+  );
   return { client: { beta: { messages: { create } } } as unknown as Anthropic, requests, signals };
 }
 
@@ -86,7 +88,11 @@ describe("interpretRequest (request to constraints)", () => {
     expect(request.thinking).toEqual({ type: "adaptive" });
     expect(request).not.toHaveProperty("tool_choice");
     expect(JSON.stringify(request)).not.toContain("budget_tokens");
-    const tools = request.tools as { name: string; strict: boolean; input_schema: { required: string[]; additionalProperties: boolean } }[];
+    const tools = request.tools as {
+      name: string;
+      strict: boolean;
+      input_schema: { required: string[]; additionalProperties: boolean };
+    }[];
     expect(tools).toHaveLength(1);
     expect(tools[0]).toMatchObject({ name: TOOL_NAME, strict: true });
     expect(tools[0].input_schema.additionalProperties).toBe(false);
@@ -122,7 +128,10 @@ describe("interpretRequest (request to constraints)", () => {
 
   it("answers an unusable tool call with an error result and accepts the correction", async () => {
     const bad = toolCall({ ...GOOD_INPUT, end_or_loop: "park-city" }, "toolu_bad");
-    const { client, requests } = fakeClient([bad, toolCall({ ...GOOD_INPUT, end_or_loop: "canyons-village" })]);
+    const { client, requests } = fakeClient([
+      bad,
+      toolCall({ ...GOOD_INPUT, end_or_loop: "canyons-village" }),
+    ]);
     const result = await interpretRequest(client, REQUEST);
     expect("data" in result && result.data.end).toBe("canyons-village");
     const history = requests[1].messages as { role: string; content: unknown }[];
@@ -142,7 +151,9 @@ describe("interpretRequest (request to constraints)", () => {
   it("gives up with a message for the visitor after two tries, never more", async () => {
     const none = () => message([{ type: "text", text: "NONE" }]);
     const { client, requests } = fakeClient([none(), none(), none()]);
-    const failure = await interpretRequest(client, "what is the capital of France?").catch((error) => error);
+    const failure = await interpretRequest(client, "what is the capital of France?").catch(
+      (error) => error,
+    );
     expect(failure).toBeInstanceOf(PipelineError);
     expect(failure.message).toBe(NO_ROUTE_MESSAGE);
     expect(failure.status).toBe(422);
@@ -157,7 +168,9 @@ describe("interpretRequest (request to constraints)", () => {
   });
 
   it("returns a refusal as a result and stops", async () => {
-    const refusal = message([], "refusal", { stop_details: { category: "cyber", explanation: "no" } });
+    const refusal = message([], "refusal", {
+      stop_details: { category: "cyber", explanation: "no" },
+    });
     const { client, requests } = fakeClient([refusal, toolCall(GOOD_INPUT)]);
     const result = await interpretRequest(client, REQUEST);
     expect(result).toMatchObject({ refusal: { category: "cyber", explanation: "no" } });
@@ -183,7 +196,10 @@ describe("interpretRequest (request to constraints)", () => {
 
   it("passes the abort signal to every call", async () => {
     const controller = new AbortController();
-    const { client, signals } = fakeClient([message([{ type: "text", text: "?" }]), toolCall(GOOD_INPUT)]);
+    const { client, signals } = fakeClient([
+      message([{ type: "text", text: "?" }]),
+      toolCall(GOOD_INPUT),
+    ]);
     await interpretRequest(client, REQUEST, controller.signal);
     expect(signals).toEqual([controller.signal, controller.signal]);
   });
@@ -266,7 +282,10 @@ describe("narrateRoute (router facts to narration)", () => {
 
   it("makes no rewrite call once the visitor has cancelled", async () => {
     const controller = new AbortController();
-    const { client, requests } = fakeClient([narrationJson("About 12 miles."), narrationJson(good)]);
+    const { client, requests } = fakeClient([
+      narrationJson("About 12 miles."),
+      narrationJson(good),
+    ]);
     const original = client.beta.messages.create;
     client.beta.messages.create = (async (...args: Parameters<typeof original>) => {
       const reply = await original(...args);
@@ -278,8 +297,12 @@ describe("narrateRoute (router facts to narration)", () => {
   });
 
   it("returns a refusal as a result", async () => {
-    const { client } = fakeClient([message([], "refusal", { stop_details: { category: null, explanation: null } })]);
-    expect(await narrateRoute(client, REQUEST, FACTS)).toMatchObject({ refusal: { category: null } });
+    const { client } = fakeClient([
+      message([], "refusal", { stop_details: { category: null, explanation: null } }),
+    ]);
+    expect(await narrateRoute(client, REQUEST, FACTS)).toMatchObject({
+      refusal: { category: null },
+    });
   });
 });
 
@@ -292,7 +315,9 @@ describe("API routes", () => {
     });
 
   it("explain a demo miss for a typed request with no key", async () => {
-    const response = await planPost(post("/api/plan-route", { request: "Hike from Alta to Snowbird" }));
+    const response = await planPost(
+      post("/api/plan-route", { request: "Hike from Alta to Snowbird" }),
+    );
     const json = (await response.json()) as ApiResponse<RouteConstraints>;
     expect(response.status).toBe(404);
     expect(json.ok === false && json.error.kind).toBe("demo_miss");
@@ -300,14 +325,26 @@ describe("API routes", () => {
 
   it("reject malformed bodies before doing anything", async () => {
     expect((await planPost(post("/api/plan-route", { request: "x" }))).status).toBe(400);
-    expect((await planPost(post("/api/plan-route", { request: "a".repeat(301) }))).status).toBe(400);
+    expect((await planPost(post("/api/plan-route", { request: "a".repeat(301) }))).status).toBe(
+      400,
+    );
     expect((await narratePost(post("/api/narrate-route", { request: REQUEST }))).status).toBe(400);
     expect(
-      (await narratePost(post("/api/narrate-route", { request: REQUEST, facts: { ...FACTS, distance: "x".repeat(500) } })))
-        .status,
+      (
+        await narratePost(
+          post("/api/narrate-route", {
+            request: REQUEST,
+            facts: { ...FACTS, distance: "x".repeat(500) },
+          }),
+        )
+      ).status,
     ).toBe(400);
     expect(
-      (await narratePost(post("/api/narrate-route", { request: REQUEST, facts: { ...FACTS, shape: "spiral" } }))).status,
+      (
+        await narratePost(
+          post("/api/narrate-route", { request: REQUEST, facts: { ...FACTS, shape: "spiral" } }),
+        )
+      ).status,
     ).toBe(400);
   });
 

@@ -37,7 +37,8 @@ describe("label decluttering", () => {
   });
 
   it("gives every landmark kind a priority, with resorts ahead of peaks", () => {
-    for (const landmark of LANDMARKS) expect(LABEL_PRIORITY[landmark.kind]).toBeGreaterThanOrEqual(0);
+    for (const landmark of LANDMARKS)
+      expect(LABEL_PRIORITY[landmark.kind]).toBeGreaterThanOrEqual(0);
     expect(LABEL_PRIORITY.resort).toBeLessThan(LABEL_PRIORITY.peak);
     expect(labelWidth("Alta")).toBeLessThan(labelWidth("American Fork Twin Peaks"));
   });

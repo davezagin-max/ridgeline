@@ -22,7 +22,8 @@ export class TerrainWorker {
       else entry.reject(new Error(message.error));
     };
     this.worker.onerror = () => {
-      for (const entry of this.pending.values()) entry.reject(new Error("The terrain worker crashed."));
+      for (const entry of this.pending.values())
+        entry.reject(new Error("The terrain worker crashed."));
       this.pending.clear();
     };
   }
@@ -42,7 +43,8 @@ export class TerrainWorker {
 
   terminate(): void {
     this.worker.terminate();
-    for (const entry of this.pending.values()) entry.reject(new Error("The terrain worker was stopped."));
+    for (const entry of this.pending.values())
+      entry.reject(new Error("The terrain worker was stopped."));
     this.pending.clear();
   }
 }

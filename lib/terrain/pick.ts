@@ -17,7 +17,12 @@ export interface SceneFrame {
 
 export type Vec3 = readonly [number, number, number];
 
-export function gridToScene(grid: Grid, frame: SceneFrame, col: number, row: number): [number, number, number] {
+export function gridToScene(
+  grid: Grid,
+  frame: SceneFrame,
+  col: number,
+  row: number,
+): [number, number, number] {
   return [
     (col - (grid.width - 1) / 2) * grid.cellX,
     (elevationAt(grid, col, row) - frame.baseElevation) * frame.exaggeration,
@@ -26,7 +31,10 @@ export function gridToScene(grid: Grid, frame: SceneFrame, col: number, row: num
 }
 
 export function sceneToGrid(grid: Grid, x: number, z: number): GridPoint {
-  return { col: x / grid.cellX + (grid.width - 1) / 2, row: z / grid.cellY + (grid.height - 1) / 2 };
+  return {
+    col: x / grid.cellX + (grid.width - 1) / 2,
+    row: z / grid.cellY + (grid.height - 1) / 2,
+  };
 }
 
 /**
@@ -34,7 +42,12 @@ export function sceneToGrid(grid: Grid, x: number, z: number): GridPoint {
  * then bisects to refine. Returns the grid position of the hit, or null when
  * the ray never meets the terrain.
  */
-export function pickTerrain(grid: Grid, frame: SceneFrame, origin: Vec3, direction: Vec3): GridPoint | null {
+export function pickTerrain(
+  grid: Grid,
+  frame: SceneFrame,
+  origin: Vec3,
+  direction: Vec3,
+): GridPoint | null {
   const length = Math.hypot(direction[0], direction[1], direction[2]);
   if (length === 0) return null;
   const dx = direction[0] / length;

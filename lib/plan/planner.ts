@@ -119,7 +119,9 @@ export function planRoute(
 ): RoutePlan {
   const grid: Grid = router.grid;
   const maxGrade =
-    constraints.maxGradePct === null ? DEFAULT_ROUTE_OPTIONS.maxGrade : constraints.maxGradePct / 100;
+    constraints.maxGradePct === null
+      ? DEFAULT_ROUTE_OPTIONS.maxGrade
+      : constraints.maxGradePct / 100;
   const base = {
     constraints,
     roundTrip: constraints.end === null,

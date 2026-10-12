@@ -47,7 +47,8 @@ export function ProfileChart({ profile, units, position, onScrub }: ProfileChart
   }${Math.abs(sample.gradePct).toFixed(0)}% grade`;
 
   const scrubFromPointer = (event: PointerEvent<HTMLDivElement>) => {
-    if (event.pointerType === "mouse" && event.buttons === 0 && event.type !== "pointerdown") return;
+    if (event.pointerType === "mouse" && event.buttons === 0 && event.type !== "pointerdown")
+      return;
     const rect = event.currentTarget.getBoundingClientRect();
     onScrub(Math.min(Math.max((event.clientX - rect.left) / rect.width, 0), 1));
   };
@@ -110,7 +111,9 @@ export function ProfileChart({ profile, units, position, onScrub }: ProfileChart
           aria-label="Position along the route"
           aria-valuetext={readout}
         />
-        <span className="shrink-0 font-mono text-[10px] text-muted">{formatDistance(chart.total, units)}</span>
+        <span className="shrink-0 font-mono text-[10px] text-muted">
+          {formatDistance(chart.total, units)}
+        </span>
       </div>
     </div>
   );

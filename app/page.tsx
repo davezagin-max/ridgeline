@@ -38,7 +38,9 @@ export default function Home() {
         role="note"
         className="border-b border-border bg-surface px-4 py-1.5 text-xs leading-snug text-fg"
       >
-        <strong className="font-semibold text-danger">Not for backcountry navigation or avalanche decisions.</strong>{" "}
+        <strong className="font-semibold text-danger">
+          Not for backcountry navigation or avalanche decisions.
+        </strong>{" "}
         Routes ignore trails, cliffs, snow and closures. For avalanche conditions, read the{" "}
         <a
           href="https://utahavalanchecenter.org"

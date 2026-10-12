@@ -138,7 +138,10 @@ export interface NarrationCheck {
 }
 
 /** Accepts a narration only if every numeral in it appears in the facts. */
-export function checkNarration(value: { title: string; narration: string }, facts: RouteFacts): NarrationCheck {
+export function checkNarration(
+  value: { title: string; narration: string },
+  facts: RouteFacts,
+): NarrationCheck {
   const problems: string[] = [];
   const title = value.title.trim();
   const narration = value.narration.trim();

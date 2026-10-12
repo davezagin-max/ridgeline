@@ -30,7 +30,13 @@ interface SegmentedProps<T extends string> {
 }
 
 /** A radio group drawn as a two- or three-way switch. Arrow keys move between options natively. */
-export function Segmented<T extends string>({ label, value, options, onChange, name }: SegmentedProps<T>) {
+export function Segmented<T extends string>({
+  label,
+  value,
+  options,
+  onChange,
+  name,
+}: SegmentedProps<T>) {
   return (
     <fieldset className="min-w-0">
       <legend className="sr-only">{label}</legend>
@@ -61,7 +67,9 @@ export function Segmented<T extends string>({ label, value, options, onChange, n
 export function Stat({ label, value, hint }: { label: string; value: string; hint?: string }) {
   return (
     <div className="min-w-0">
-      <dt className="truncate text-[10px] font-medium uppercase tracking-wide text-muted">{label}</dt>
+      <dt className="truncate text-[10px] font-medium uppercase tracking-wide text-muted">
+        {label}
+      </dt>
       <dd className="truncate font-mono text-sm font-semibold tabular-nums" title={hint}>
         {value}
       </dd>

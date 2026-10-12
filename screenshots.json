@@ -1,5 +1,6 @@
 {
   "port": 3290,
+  "maxWidth": 1600,
   "shots": [
     {
       "name": "hero",
@@ -15,13 +16,13 @@
       "viewport": "desktop",
       "actions": [
         { "waitFor": "[data-route='found'][data-shaded='true']" },
-        { "click": "text=2-hour ride with under 2,000 ft" },
+        { "click": "text=Shortest ride from the mouth" },
         { "waitFor": "figure" },
         { "wait": 1200 }
       ]
     },
     {
-      "name": "slope-dark",
+      "name": "dark",
       "path": "/",
       "theme": "dark",
       "viewport": "desktop",
@@ -32,11 +33,39 @@
       ]
     },
     {
+      "name": "map-2d",
+      "path": "/",
+      "theme": "light",
+      "viewport": "desktop",
+      "actions": [
+        { "waitFor": "[data-route='found'][data-shaded='true']" },
+        { "click": "text=2D map" },
+        { "wait": 1000 }
+      ]
+    },
+    {
       "name": "mobile",
       "path": "/",
       "theme": "light",
       "viewport": "mobile",
       "actions": [{ "waitFor": "[data-route='found'][data-shaded='true']" }, { "wait": 1500 }]
     }
-  ]
+  ],
+  "gif": {
+    "path": "/",
+    "theme": "light",
+    "actions": [
+      { "waitFor": "[data-route='found'][data-shaded='true']" },
+      { "wait": 1400 },
+      { "click": "label:has-text('Shortest')" },
+      { "wait": 1300 },
+      { "click": "label:has-text('Climb-friendly')" },
+      { "wait": 1000 },
+      { "click": "text=2-hour ride with under 2,000 ft" },
+      { "waitFor": "figure" },
+      { "wait": 2200 },
+      { "click": "text=Slope angle" },
+      { "wait": 2000 }
+    ]
+  }
 }

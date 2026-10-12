@@ -25,11 +25,13 @@ export function useTerrain(): TerrainState {
         if (!response.ok) throw new Error(`The heightmap did not load (HTTP ${response.status}).`);
         const buffer = await response.arrayBuffer();
         const grid = decodeHeightmap(buffer, TERRAIN_META);
-        worker = new TerrainWorker();
-        // The page has its decoded copy, so the raw bytes can be moved to the worker.
-        await worker.call("init", { buffer, meta: TERRAIN_META }, [buffer]);
         if (cancelled) return;
-        setState({ status: "ready", grid, meta: TERRAIN_META, worker });
+        const created = new TerrainWorker();
+        worker = created;
+        // The page has its decoded copy, so the raw bytes can be moved to the worker.
+        await created.call("init", { buffer, meta: TERRAIN_META }, [buffer]);
+        if (cancelled) return;
+        setState({ status: "ready", grid, meta: TERRAIN_META, worker: created });
       } catch (error) {
         if (cancelled) return;
         setState({

@@ -52,9 +52,12 @@ function chips(constraints: RouteConstraints, units: Units): string[] {
   const name = (id: string) => findLandmark(id)?.name ?? id;
   const list = [`From ${name(constraints.start)}`];
   list.push(constraints.end ? `To ${name(constraints.end)}` : "Out and back");
-  if (constraints.maxClimbM !== null) list.push(`Climb under ${formatHeight(constraints.maxClimbM, units)}`);
-  if (constraints.targetDurationMin !== null) list.push(`About ${formatDuration(constraints.targetDurationMin)}`);
-  if (constraints.maxGradePct !== null) list.push(`Grade under ${formatGrade(constraints.maxGradePct)}`);
+  if (constraints.maxClimbM !== null)
+    list.push(`Climb under ${formatHeight(constraints.maxClimbM, units)}`);
+  if (constraints.targetDurationMin !== null)
+    list.push(`About ${formatDuration(constraints.targetDurationMin)}`);
+  if (constraints.maxGradePct !== null)
+    list.push(`Grade under ${formatGrade(constraints.maxGradePct)}`);
   list.push(constraints.mode === "shortest" ? "Shortest" : "Climb-friendly");
   list.push(constraints.activity === "ride" ? "Ride" : "Hike");
   return list;
@@ -67,7 +70,13 @@ function CheckRow({ check, units }: { check: PlanCheck; units: Units }) {
       : check.kind === "duration"
         ? `About ${formatDuration(check.actualMin)} against a ${formatDuration(check.targetMin)} target`
         : `Steepest step ${formatGrade(check.actualPct)} against a ${formatGrade(check.limitPct)} limit`;
-  const verdict = check.ok ? (check.kind === "duration" ? "Close" : "Met") : check.kind === "duration" ? "Off target" : "Not met";
+  const verdict = check.ok
+    ? check.kind === "duration"
+      ? "Close"
+      : "Met"
+    : check.kind === "duration"
+      ? "Off target"
+      : "Not met";
   return (
     <li className="flex items-start justify-between gap-2 text-xs">
       <span>{text}</span>
@@ -82,7 +91,15 @@ function CheckRow({ check, units }: { check: PlanCheck; units: Units }) {
   );
 }
 
-export function PlannerPanel({ state, ready, isLive, units, onRun, onCancel, onAddKey }: PlannerPanelProps) {
+export function PlannerPanel({
+  state,
+  ready,
+  isLive,
+  units,
+  onRun,
+  onCancel,
+  onAddKey,
+}: PlannerPanelProps) {
   const [text, setText] = useState("");
   const inputId = useId();
   const working = state.status === "working";
@@ -106,8 +123,8 @@ export function PlannerPanel({ state, ready, isLive, units, onRun, onCancel, onA
   return (
     <Section title="Ask for a route" aside="optional, Claude Opus 5.5">
       <p className="text-xs leading-snug text-muted">
-        Claude turns a sentence into routing constraints. The router in your browser does the rest, and
-        Claude may only quote the numbers it produced.
+        Claude turns a sentence into routing constraints. The router in your browser does the rest,
+        and Claude may only quote the numbers it produced.
       </p>
 
       <div className="flex flex-col gap-1.5">
@@ -130,7 +147,10 @@ export function PlannerPanel({ state, ready, isLive, units, onRun, onCancel, onA
       </div>
 
       <form onSubmit={submit} className="flex flex-col gap-1.5">
-        <label htmlFor={inputId} className="text-[11px] font-medium uppercase tracking-wide text-muted">
+        <label
+          htmlFor={inputId}
+          className="text-[11px] font-medium uppercase tracking-wide text-muted"
+        >
           Your own request
         </label>
         <div className="flex gap-1.5">
@@ -140,7 +160,9 @@ export function PlannerPanel({ state, ready, isLive, units, onRun, onCancel, onA
             onChange={(event) => setText(event.target.value)}
             maxLength={300}
             disabled={!isLive}
-            placeholder={isLive ? "Easy hike from Brighton, about 90 minutes" : "Needs your Anthropic key"}
+            placeholder={
+              isLive ? "Easy hike from Brighton, about 90 minutes" : "Needs your Anthropic key"
+            }
             className="min-w-0 flex-1 rounded-md border border-border bg-bg px-2 py-1.5 text-sm disabled:opacity-60"
           />
           <button
@@ -153,8 +175,13 @@ export function PlannerPanel({ state, ready, isLive, units, onRun, onCancel, onA
         </div>
         {!isLive && (
           <p className="text-[11px] leading-snug text-muted">
-            The three requests above work without a key. Typing your own calls Claude, so it needs yours.{" "}
-            <button type="button" onClick={onAddKey} className="font-medium text-accent underline underline-offset-2">
+            The three requests above work without a key. Typing your own calls Claude, so it needs
+            yours.{" "}
+            <button
+              type="button"
+              onClick={onAddKey}
+              className="font-medium text-accent underline underline-offset-2"
+            >
               Add key
             </button>
           </p>
@@ -170,7 +197,13 @@ export function PlannerPanel({ state, ready, isLive, units, onRun, onCancel, onA
                 return (
                   <li
                     key={step}
-                    className={index === at ? "font-semibold" : index < at ? "text-muted line-through" : "text-muted"}
+                    className={
+                      index === at
+                        ? "font-semibold"
+                        : index < at
+                          ? "text-muted line-through"
+                          : "text-muted"
+                    }
                   >
                     {index + 1}. {label}
                     {index === at ? "…" : ""}
@@ -203,7 +236,11 @@ export function PlannerPanel({ state, ready, isLive, units, onRun, onCancel, onA
             </p>
             <p className="mt-1">{state.message}</p>
             {(state.kind === "auth" || state.kind === "demo_miss") && (
-              <button type="button" onClick={onAddKey} className="mt-2 font-medium text-accent underline underline-offset-2">
+              <button
+                type="button"
+                onClick={onAddKey}
+                className="mt-2 font-medium text-accent underline underline-offset-2"
+              >
                 {state.kind === "auth" ? "Change key" : "Add key"}
               </button>
             )}
@@ -213,10 +250,15 @@ export function PlannerPanel({ state, ready, isLive, units, onRun, onCancel, onA
         {state.status === "done" && (
           <div className="flex flex-col gap-3 rounded-md border border-border bg-bg p-3">
             <div className="flex flex-col gap-1.5">
-              <p className="text-[11px] font-medium text-muted">{constraintsCaption(state.constraintsMeta)}</p>
+              <p className="text-[11px] font-medium text-muted">
+                {constraintsCaption(state.constraintsMeta)}
+              </p>
               <ul className="flex flex-wrap gap-1">
                 {chips(state.constraints, units).map((chip) => (
-                  <li key={chip} className="rounded border border-border bg-surface px-1.5 py-0.5 text-[11px]">
+                  <li
+                    key={chip}
+                    className="rounded border border-border bg-surface px-1.5 py-0.5 text-[11px]"
+                  >
                     {chip}
                   </li>
                 ))}
@@ -229,7 +271,9 @@ export function PlannerPanel({ state, ready, isLive, units, onRun, onCancel, onA
               <>
                 {state.plan.checks.length > 0 && (
                   <div className="flex flex-col gap-1.5">
-                    <p className="text-[11px] font-medium text-muted">Checked by code against the route</p>
+                    <p className="text-[11px] font-medium text-muted">
+                      Checked by code against the route
+                    </p>
                     <ul className="flex flex-col gap-1">
                       {state.plan.checks.map((check) => (
                         <CheckRow key={check.kind} check={check} units={units} />

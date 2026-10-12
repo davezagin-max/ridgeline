@@ -5,7 +5,14 @@
  */
 import type Anthropic from "@anthropic-ai/sdk";
 import type { LiveResult } from "../api";
-import { PipelineError, callClaude, strictTool, untrusted, type CallResult, type Msg } from "../claude";
+import {
+  PipelineError,
+  callClaude,
+  strictTool,
+  untrusted,
+  type CallResult,
+  type Msg,
+} from "../claude";
 import { MODELS, ZERO_USAGE, addUsage, type Usage } from "../config";
 import {
   TOOL_NAME,

@@ -53,7 +53,17 @@ const CAMERA_BUTTON =
 
 function Glyph({ d }: { d: string }) {
   return (
-    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+    <svg
+      width="16"
+      height="16"
+      viewBox="0 0 16 16"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.6"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden
+    >
       <path d={d} />
     </svg>
   );
@@ -63,19 +73,49 @@ function Glyph({ d }: { d: string }) {
 function CameraButtons({ api }: { api: RefObject<CameraApi | null> }) {
   return (
     <div className="absolute right-2 top-2 flex flex-col overflow-hidden rounded-md border border-border bg-panel text-fg shadow backdrop-blur">
-      <button type="button" className={CAMERA_BUTTON} aria-label="Zoom in" title="Zoom in" onClick={() => api.current?.zoom(0.75)}>
+      <button
+        type="button"
+        className={CAMERA_BUTTON}
+        aria-label="Zoom in"
+        title="Zoom in"
+        onClick={() => api.current?.zoom(0.75)}
+      >
         <Glyph d="M8 3v10M3 8h10" />
       </button>
-      <button type="button" className={CAMERA_BUTTON} aria-label="Zoom out" title="Zoom out" onClick={() => api.current?.zoom(1.33)}>
+      <button
+        type="button"
+        className={CAMERA_BUTTON}
+        aria-label="Zoom out"
+        title="Zoom out"
+        onClick={() => api.current?.zoom(1.33)}
+      >
         <Glyph d="M3 8h10" />
       </button>
-      <button type="button" className={CAMERA_BUTTON} aria-label="Rotate left" title="Rotate left" onClick={() => api.current?.rotate(-Math.PI / 8)}>
+      <button
+        type="button"
+        className={CAMERA_BUTTON}
+        aria-label="Rotate left"
+        title="Rotate left"
+        onClick={() => api.current?.rotate(-Math.PI / 8)}
+      >
         <Glyph d="M3.5 8a4.5 4.5 0 1 0 1.6-3.4M5 2v3H2" />
       </button>
-      <button type="button" className={CAMERA_BUTTON} aria-label="Rotate right" title="Rotate right" onClick={() => api.current?.rotate(Math.PI / 8)}>
+      <button
+        type="button"
+        className={CAMERA_BUTTON}
+        aria-label="Rotate right"
+        title="Rotate right"
+        onClick={() => api.current?.rotate(Math.PI / 8)}
+      >
         <Glyph d="M12.5 8a4.5 4.5 0 1 1-1.6-3.4M11 2v3h3" />
       </button>
-      <button type="button" className={CAMERA_BUTTON} aria-label="Reset view" title="Reset view" onClick={() => api.current?.reset()}>
+      <button
+        type="button"
+        className={CAMERA_BUTTON}
+        aria-label="Reset view"
+        title="Reset view"
+        onClick={() => api.current?.reset()}
+      >
         <Glyph d="M2.5 8 8 3l5.5 5M4.5 7v6h7V7" />
       </button>
     </div>
@@ -295,7 +335,9 @@ export function Explorer() {
         className="relative isolate h-[40svh] min-h-64 shrink-0 overflow-hidden lg:absolute lg:inset-0 lg:h-auto"
         style={{ background: "linear-gradient(var(--sky-top), var(--sky-bottom))" }}
       >
-        {terrain.status === "loading" && <MapMessage>Loading 1.3 MB of Wasatch elevation…</MapMessage>}
+        {terrain.status === "loading" && (
+          <MapMessage>Loading 1.3 MB of Wasatch elevation…</MapMessage>
+        )}
         {terrain.status === "error" && (
           <MapMessage>
             <span role="alert" className="flex flex-col items-center gap-3">
@@ -312,7 +354,12 @@ export function Explorer() {
         )}
         {mapData &&
           (view === "3d" ? (
-            <Terrain3D {...mapData} onPick={handlePick} apiRef={cameraApi} inset={wide ? WIDE_INSET : NO_INSET} />
+            <Terrain3D
+              {...mapData}
+              onPick={handlePick}
+              apiRef={cameraApi}
+              inset={wide ? WIDE_INSET : NO_INSET}
+            />
           ) : (
             <Map2D {...mapData} onPick={handlePick} />
           ))}
@@ -322,7 +369,11 @@ export function Explorer() {
         {picking && (
           <div className="absolute left-1/2 top-2 flex -translate-x-1/2 items-center gap-2 rounded-md border border-accent bg-panel px-3 py-1.5 text-xs font-medium shadow backdrop-blur">
             <span role="status">{PICK_HINT[picking]}</span>
-            <button type="button" onClick={() => setPicking(null)} className="underline underline-offset-2">
+            <button
+              type="button"
+              onClick={() => setPicking(null)}
+              className="underline underline-offset-2"
+            >
               Cancel
             </button>
           </div>
@@ -334,7 +385,9 @@ export function Explorer() {
           </p>
         )}
         <p className="pointer-events-none absolute bottom-1 right-2 max-w-[70%] truncate rounded bg-panel px-1.5 py-0.5 text-[10px] text-muted lg:hidden">
-          {meta.synthetic ? "Synthetic terrain" : "Elevation: Mapzen Terrain Tiles on AWS, USGS 3DEP"}
+          {meta.synthetic
+            ? "Synthetic terrain"
+            : "Elevation: Mapzen Terrain Tiles on AWS, USGS 3DEP"}
         </p>
       </div>
 
@@ -348,7 +401,12 @@ export function Explorer() {
                   <Stat label="Climb" value={formatHeight(stats.climbM, units)} />
                   <Stat label="Est. time" value={formatDuration(stats.minutes)} />
                 </dl>
-                <ProfileChart profile={profile} units={units} position={position} onScrub={setPosition} />
+                <ProfileChart
+                  profile={profile}
+                  units={units}
+                  position={position}
+                  onScrub={setPosition}
+                />
               </div>
             ) : (
               <p className="py-4 text-center text-xs text-muted">

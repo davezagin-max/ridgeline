@@ -49,7 +49,13 @@ describe("ray picking against the heightfield", () => {
 
   it("stops at the first slope it meets, not the ground behind it", () => {
     // A 200 m ridge running north-south through the middle of the map.
-    const ridge = makeGrid(41, 5, 10, 10, (col) => 500 + Math.max(0, 200 - Math.abs(col - 20) * 40));
+    const ridge = makeGrid(
+      41,
+      5,
+      10,
+      10,
+      (col) => 500 + Math.max(0, 200 - Math.abs(col - 20) * 40),
+    );
     // A level ray 100 m up, travelling east from the west edge: the ridge face is at 100 m
     // when |col - 20| * 40 = 100, i.e. col 17.5.
     const hit = pickTerrain(ridge, frame, [-200, 100, 0], [1, 0, 0]);
@@ -58,7 +64,12 @@ describe("ray picking against the heightfield", () => {
 
   it("respects vertical exaggeration", () => {
     const ramp = makeGrid(21, 3, 10, 10, (col) => 500 + col * 5);
-    const hit = pickTerrain(ramp, { baseElevation: 500, exaggeration: 2 }, [-100, 60, 0], [1, 0, 0]);
+    const hit = pickTerrain(
+      ramp,
+      { baseElevation: 500, exaggeration: 2 },
+      [-100, 60, 0],
+      [1, 0, 0],
+    );
     // Exaggerated height is 10 m per column, so 60 m is reached at column 6.
     expect(hit?.col).toBeCloseTo(6, 2);
   });
@@ -104,7 +115,13 @@ describe("the shaded texture", () => {
   it("paints slope bands only where the ground is steep enough", () => {
     // 38 degrees: inside the red 35-45 band.
     const steep = makeGrid(5, 5, 30, 30, (col) => 2000 + col * 30 * Math.tan((38 * Math.PI) / 180));
-    const gentle = makeGrid(5, 5, 30, 30, (col) => 2000 + col * 30 * Math.tan((10 * Math.PI) / 180));
+    const gentle = makeGrid(
+      5,
+      5,
+      30,
+      30,
+      (col) => 2000 + col * 30 * Math.tan((10 * Math.PI) / 180),
+    );
     const centre = (2 * 5 + 2) * 4;
     const on = { hillshade: false, slopeBands: true, dark: false };
     const off = { hillshade: false, slopeBands: false, dark: false };
