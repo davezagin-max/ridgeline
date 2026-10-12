@@ -164,6 +164,23 @@ describe("interpretRequest (request to constraints)", () => {
     expect(requests).toHaveLength(1);
   });
 
+  it("makes no second call once the visitor has cancelled", async () => {
+    const controller = new AbortController();
+    const { client, requests } = fakeClient([
+      message([{ type: "text", text: "Where from?" }]),
+      toolCall(GOOD_INPUT),
+    ]);
+    const original = client.beta.messages.create;
+    // The visitor cancels while the first call is in flight.
+    client.beta.messages.create = (async (...args: Parameters<typeof original>) => {
+      const reply = await original(...args);
+      controller.abort();
+      return reply;
+    }) as typeof original;
+    await expect(interpretRequest(client, REQUEST, controller.signal)).rejects.toThrow();
+    expect(requests).toHaveLength(1);
+  });
+
   it("passes the abort signal to every call", async () => {
     const controller = new AbortController();
     const { client, signals } = fakeClient([message([{ type: "text", text: "?" }]), toolCall(GOOD_INPUT)]);
@@ -245,6 +262,19 @@ describe("narrateRoute (router facts to narration)", () => {
     ]);
     const result = await narrateRoute(client, REQUEST, FACTS);
     expect("data" in result && result.data.source).toBe("model");
+  });
+
+  it("makes no rewrite call once the visitor has cancelled", async () => {
+    const controller = new AbortController();
+    const { client, requests } = fakeClient([narrationJson("About 12 miles."), narrationJson(good)]);
+    const original = client.beta.messages.create;
+    client.beta.messages.create = (async (...args: Parameters<typeof original>) => {
+      const reply = await original(...args);
+      controller.abort();
+      return reply;
+    }) as typeof original;
+    await expect(narrateRoute(client, REQUEST, FACTS, controller.signal)).rejects.toThrow();
+    expect(requests).toHaveLength(1);
   });
 
   it("returns a refusal as a result", async () => {

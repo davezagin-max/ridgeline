@@ -60,6 +60,8 @@ export async function interpretRequest(
   let messages: Msg[] = [{ role: "user", content: untrusted("request", request) }];
 
   for (let attempt = 1; attempt <= 2; attempt++) {
+    // A visitor who cancelled or left must not be billed for the second try.
+    signal?.throwIfAborted();
     const result = await callClaude({
       client,
       model: MODELS.opus,
@@ -121,6 +123,7 @@ export async function narrateRoute(
   ];
 
   for (let attempt = 1; attempt <= 2; attempt++) {
+    signal?.throwIfAborted();
     const result = await callClaude({
       client,
       model: MODELS.opus,
