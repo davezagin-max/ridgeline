@@ -1,0 +1,260 @@
+[
+  {
+    "id": "alta",
+    "name": "Alta",
+    "kind": "resort",
+    "lat": 40.5884,
+    "lon": -111.6386,
+    "publishedFt": 8530
+  },
+  {
+    "id": "snowbird",
+    "name": "Snowbird",
+    "kind": "resort",
+    "lat": 40.581,
+    "lon": -111.6567,
+    "publishedFt": 8100
+  },
+  {
+    "id": "brighton",
+    "name": "Brighton",
+    "kind": "resort",
+    "lat": 40.598,
+    "lon": -111.5832,
+    "publishedFt": 8755
+  },
+  {
+    "id": "solitude",
+    "name": "Solitude Village",
+    "kind": "resort",
+    "lat": 40.6199,
+    "lon": -111.5919,
+    "publishedFt": null
+  },
+  {
+    "id": "park-city-mountain",
+    "name": "Park City Mountain base",
+    "kind": "resort",
+    "lat": 40.6514,
+    "lon": -111.508,
+    "publishedFt": 6900
+  },
+  {
+    "id": "deer-valley",
+    "name": "Deer Valley Snow Park",
+    "kind": "resort",
+    "lat": 40.6374,
+    "lon": -111.4783,
+    "publishedFt": 7200
+  },
+  {
+    "id": "silver-lake-lodge",
+    "name": "Silver Lake Lodge",
+    "kind": "resort",
+    "lat": 40.6219,
+    "lon": -111.4897,
+    "publishedFt": 8100
+  },
+  {
+    "id": "canyons-village",
+    "name": "Canyons Village",
+    "kind": "resort",
+    "lat": 40.6855,
+    "lon": -111.5564,
+    "publishedFt": null
+  },
+  {
+    "id": "park-city",
+    "name": "Park City Old Town",
+    "kind": "town",
+    "lat": 40.6461,
+    "lon": -111.498,
+    "publishedFt": 7000
+  },
+
+  {
+    "id": "guardsman-pass",
+    "name": "Guardsman Pass",
+    "kind": "pass",
+    "lat": 40.6066,
+    "lon": -111.5552,
+    "publishedFt": 9700
+  },
+  {
+    "id": "white-pine",
+    "name": "White Pine trailhead",
+    "kind": "trailhead",
+    "lat": 40.5757,
+    "lon": -111.681,
+    "publishedFt": 7700
+  },
+  {
+    "id": "little-cottonwood-mouth",
+    "name": "Little Cottonwood Canyon mouth",
+    "kind": "trailhead",
+    "lat": 40.5725,
+    "lon": -111.7745,
+    "publishedFt": null
+  },
+  {
+    "id": "big-cottonwood-mouth",
+    "name": "Big Cottonwood Canyon mouth",
+    "kind": "trailhead",
+    "lat": 40.6191,
+    "lon": -111.786,
+    "publishedFt": null
+  },
+  {
+    "id": "mill-b",
+    "name": "Mill B trailhead",
+    "kind": "trailhead",
+    "lat": 40.633,
+    "lon": -111.7236,
+    "publishedFt": 6200
+  },
+  {
+    "id": "spruces",
+    "name": "Spruces",
+    "kind": "trailhead",
+    "lat": 40.642,
+    "lon": -111.638,
+    "publishedFt": null
+  },
+  {
+    "id": "cecret-lake",
+    "name": "Cecret Lake",
+    "kind": "lake",
+    "lat": 40.5704,
+    "lon": -111.6219,
+    "publishedFt": 9875
+  },
+  {
+    "id": "lake-mary",
+    "name": "Lake Mary",
+    "kind": "lake",
+    "lat": 40.588,
+    "lon": -111.589,
+    "publishedFt": 9560
+  },
+
+  {
+    "id": "american-fork-twin-peaks",
+    "name": "American Fork Twin Peaks",
+    "kind": "peak",
+    "lat": 40.5518,
+    "lon": -111.6565,
+    "publishedFt": 11489
+  },
+  {
+    "id": "broads-fork-twin-peaks",
+    "name": "Broads Fork Twin Peaks",
+    "kind": "peak",
+    "lat": 40.5938,
+    "lon": -111.7208,
+    "publishedFt": 11330
+  },
+  {
+    "id": "pfeifferhorn",
+    "name": "Pfeifferhorn",
+    "kind": "peak",
+    "lat": 40.5335,
+    "lon": -111.7059,
+    "publishedFt": 11326
+  },
+  {
+    "id": "lone-peak",
+    "name": "Lone Peak",
+    "kind": "peak",
+    "lat": 40.5273,
+    "lon": -111.7561,
+    "publishedFt": 11253
+  },
+  {
+    "id": "mount-baldy",
+    "name": "Mount Baldy",
+    "kind": "peak",
+    "lat": 40.5679,
+    "lon": -111.638,
+    "publishedFt": 11068
+  },
+  {
+    "id": "mount-superior",
+    "name": "Mount Superior",
+    "kind": "peak",
+    "lat": 40.5921,
+    "lon": -111.6669,
+    "publishedFt": 11040
+  },
+  {
+    "id": "hidden-peak",
+    "name": "Hidden Peak",
+    "kind": "peak",
+    "lat": 40.5608,
+    "lon": -111.645,
+    "publishedFt": 10992
+  },
+  {
+    "id": "mount-wolverine",
+    "name": "Mount Wolverine",
+    "kind": "peak",
+    "lat": 40.5854,
+    "lon": -111.6034,
+    "publishedFt": 10795
+  },
+  {
+    "id": "clayton-peak",
+    "name": "Clayton Peak",
+    "kind": "peak",
+    "lat": 40.5907,
+    "lon": -111.56,
+    "publishedFt": 10721
+  },
+  {
+    "id": "sunset-peak",
+    "name": "Sunset Peak",
+    "kind": "peak",
+    "lat": 40.5769,
+    "lon": -111.5938,
+    "publishedFt": 10648
+  },
+  {
+    "id": "kessler-peak",
+    "name": "Kessler Peak",
+    "kind": "peak",
+    "lat": 40.6251,
+    "lon": -111.6688,
+    "publishedFt": 10403
+  },
+  {
+    "id": "gobblers-knob",
+    "name": "Gobblers Knob",
+    "kind": "peak",
+    "lat": 40.6707,
+    "lon": -111.6829,
+    "publishedFt": 10246
+  },
+  {
+    "id": "mount-raymond",
+    "name": "Mount Raymond",
+    "kind": "peak",
+    "lat": 40.6586,
+    "lon": -111.7022,
+    "publishedFt": 10241
+  },
+  {
+    "id": "jupiter-peak",
+    "name": "Jupiter Peak",
+    "kind": "peak",
+    "lat": 40.6132,
+    "lon": -111.5399,
+    "publishedFt": 9998
+  },
+  {
+    "id": "mount-olympus",
+    "name": "Mount Olympus",
+    "kind": "peak",
+    "lat": 40.6566,
+    "lon": -111.7709,
+    "publishedFt": 9026
+  }
+]
