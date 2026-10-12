@@ -1,17 +1,16 @@
 [project]
 name = "ridgeline-tools"
 version = "0.1.0"
+description = "Builds the compact Wasatch heightmap that the Ridgeline web app ships with."
 requires-python = ">=3.12"
 dependencies = [
-    "anthropic>=1.13",
-    "fastapi>=0.143.0",
-    "pydantic>=2.14.0",
-    "uvicorn[standard]>=0.54.0",
+    "numpy>=2.1",
+    "pillow>=11.0",
+    "truststore>=0.10",
 ]
 
 [dependency-groups]
 dev = [
-    "httpx>=0.28.1",
     "mypy>=2.4.0",
     "pytest>=9.1.1",
     "ruff>=0.17.0",
@@ -30,6 +29,6 @@ testpaths = ["tests"]
 
 [tool.mypy]
 python_version = "3.12"
-files = ["app"]
+files = ["terrain"]
 ignore_missing_imports = true
 check_untyped_defs = true

@@ -1,0 +1,33 @@
+{
+  "name": "wasatch",
+  "width": 1024,
+  "height": 640,
+  "bounds": {
+    "west": -111.83,
+    "south": 40.52,
+    "east": -111.45,
+    "north": 40.7
+  },
+  "cellX": 31.3564,
+  "cellY": 31.3226,
+  "minElevation": 1337.2,
+  "maxElevation": 3489.1,
+  "encoding": {
+    "file": "wasatch.u16",
+    "type": "uint16-le",
+    "offset": 1337.0,
+    "scale": 0.1,
+    "rowOrder": "north-to-south"
+  },
+  "synthetic": false,
+  "source": {
+    "name": "Terrain Tiles (Mapzen / Tilezen Joerd), Terrarium encoding",
+    "url": "https://registry.opendata.aws/terrain-tiles/",
+    "license": "https://github.com/tilezen/joerd/blob/master/docs/attribution.md",
+    "attribution": "Elevation: Terrain Tiles by Mapzen, hosted by AWS Open Data. United States 3DEP (formerly NED) terrain data courtesy of the U.S. Geological Survey.",
+    "processing": "Zoom 12 tiles mosaicked, bilinearly resampled to a regular longitude/latitude grid, and stored as 16-bit integers in 0.1 m steps.",
+    "zoom": 12,
+    "tiles": 15
+  },
+  "accessed": "2026-10-11"
+}
