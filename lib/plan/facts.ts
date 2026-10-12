@@ -6,7 +6,8 @@
  * those strings and told to quote them. `checkNarration` then pulls every
  * numeral out of what the model wrote and rejects the text if any of them is
  * not one of the numerals in the facts. A distance the router did not produce
- * cannot reach the screen.
+ * cannot reach the screen. The text must also state the distance and the
+ * total climb verbatim, so a narration cannot pass by saying nothing.
  */
 import { z } from "zod";
 import { findLandmark } from "../terrain/landmarks";
@@ -159,6 +160,13 @@ export function checkNarration(
   );
   if (invented.length > 0) {
     problems.push(`These figures are not in the facts: ${invented.slice(0, 8).join(", ")}.`);
+  }
+  // A description of a route that leaves out how far and how much climbing is not one.
+  if (narration && !narration.includes(facts.distance)) {
+    problems.push(`State the distance exactly as given (${facts.distance}).`);
+  }
+  if (narration && !narration.includes(facts.climb)) {
+    problems.push(`State the total climb exactly as given (${facts.climb}).`);
   }
   return { ok: problems.length === 0, problems };
 }

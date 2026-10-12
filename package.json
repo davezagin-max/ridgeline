@@ -14,7 +14,7 @@
     "smoke": "vitest run tests/kit/smoke.live.test.ts",
     "record": "pnpm record:step --only plan-route && pnpm facts && pnpm record:step --only narrate-route",
     "record:step": "node scripts/record.mjs",
-    "facts": "UPDATE_FACTS=1 vitest run tests/ai/presets.test.ts",
+    "facts": "UPDATE_FACTS=1 vitest run tests/ai/presets.test.ts -t 'lists every preset'",
     "screenshots": "node scripts/screenshot.mjs"
   },
   "dependencies": {

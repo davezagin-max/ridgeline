@@ -251,7 +251,7 @@ describe("narrateRoute (router facts to narration)", () => {
     const history = requests[1].messages as { role: string; content: string }[];
     expect(history.map((turn) => turn.role)).toEqual(["user", "assistant", "user"]);
     expect(history[2].content).toBe(
-      "Rewrite it. These figures are not in the facts: 12, 3. Use only figures from the facts, copied exactly.",
+      `Rewrite it. These figures are not in the facts: 12, 3. State the distance exactly as given (${FACTS.distance}). State the total climb exactly as given (${FACTS.climb}). Use only figures from the facts, copied exactly.`,
     );
     expect("data" in result && result.usage.output_tokens).toBe(200);
   });

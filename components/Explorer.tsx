@@ -427,6 +427,7 @@ export function Explorer() {
             spec={spec}
             route={route}
             ready={terrain.status === "ready"}
+            failed={terrain.status === "error"}
             units={units}
             picking={picking}
             onChange={updateSpec}

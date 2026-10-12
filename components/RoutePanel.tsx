@@ -33,6 +33,8 @@ interface RoutePanelProps {
   spec: RouteSpec;
   route: RouteView | null;
   ready: boolean;
+  /** True when the heightmap could not be loaded. */
+  failed: boolean;
   units: Units;
   picking: PickTarget | null;
   onChange: (patch: Partial<RouteSpec>) => void;
@@ -89,6 +91,7 @@ export function RoutePanel({
   spec,
   route,
   ready,
+  failed,
   units,
   picking,
   onChange,
@@ -192,7 +195,11 @@ export function RoutePanel({
       </div>
 
       <div aria-live="polite">
-        {!ready || !route ? (
+        {failed ? (
+          <p className="text-xs text-muted">
+            The terrain did not load, so there is nothing to route on.
+          </p>
+        ) : !ready || !route ? (
           <p className="text-xs text-muted">Finding a route…</p>
         ) : stats ? (
           <>

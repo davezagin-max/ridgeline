@@ -340,9 +340,28 @@ describe("facts and the narration check", () => {
   });
 
   it("rejects empty and overlong text", () => {
-    expect(checkNarration({ title: " ", narration: "" }, facts).problems).toHaveLength(2);
+    expect(checkNarration({ title: " ", narration: "" }, facts).problems).toEqual([
+      "The title is empty.",
+      "The narration is empty.",
+    ]);
     expect(checkNarration({ title: "t".repeat(81), narration: "fine" }, facts).ok).toBe(false);
     expect(checkNarration({ title: "ok", narration: "word ".repeat(200) }, facts).ok).toBe(false);
+  });
+
+  it("requires the distance and the total climb to be stated verbatim", () => {
+    const silent = checkNarration(
+      { title: "A loop", narration: "A pleasant out-and-back ride." },
+      facts,
+    );
+    expect(silent.problems).toEqual([
+      `State the distance exactly as given (${facts.distance}).`,
+      `State the total climb exactly as given (${facts.climb}).`,
+    ]);
+    const half = checkNarration(
+      { title: "A loop", narration: `A pleasant ride of ${facts.distance}.` },
+      facts,
+    );
+    expect(half.problems).toEqual([`State the total climb exactly as given (${facts.climb}).`]);
   });
 
   it("the code-written fallback always passes its own check", () => {

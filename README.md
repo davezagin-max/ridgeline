@@ -10,8 +10,8 @@
 
 ![Switching routing mode, asking for a route in a sentence, and turning on slope-angle shading](docs/demo.gif)
 
-| Slope-angle shading, dark theme | Phone | 2D map (also the no-WebGL fallback) |
-| --- | --- | --- |
+| Slope-angle shading, dark theme                                        | Phone                                           | 2D map (also the no-WebGL fallback)                       |
+| ---------------------------------------------------------------------- | ----------------------------------------------- | --------------------------------------------------------- |
 | ![Slope-angle bands over the terrain in the dark theme](docs/dark.png) | ![The same app at 390 px wide](docs/mobile.png) | ![The flat map view with the same route](docs/map-2d.png) |
 
 > **Not for backcountry navigation or avalanche decisions.** Routes ignore trails, cliffs, snow, closures and land ownership, and the slope shading comes from 31 m data. For avalanche conditions read the [Utah Avalanche Center](https://utahavalanchecenter.org) forecast. The same notice is pinned to the top of the app.
@@ -28,7 +28,7 @@ Demo data in this commit is hand-written sample output; `pnpm record` replaces i
 
 - **The router's promises are proved, then tested.** Routing is A\* over the heightmap as an 8-connected grid, with cost = 3D distance + a penalty per metre climbed + a smaller one for steep descents, and a hard maximum grade. The heuristic (grid distance combined with the height difference, plus the climb that cannot be avoided) never overestimates and never drops faster than a step costs, so the first route found is optimal. "Climb-friendly" and "shortest" differ in one weight only, which makes "climb-friendly never climbs more" a two-line theorem rather than a hope. Tests check optimality against an independent Bellman-Ford solver, check the heuristic on every node of small grids, and check the theorem on random terrain and on the real map.
 - **A climb limit without an NP-hard search.** "Keep it under 2,000 ft of climbing" is a cap on a path-wide total, which shortest-path search cannot take directly. The planner uses Lagrangian relaxation instead: it turns the climb weight up a short ladder until the cheapest route fits. Because raising the weight can never add climb, the first weight that fits is the least-distorted answer. A "loop" request becomes an out-and-back chosen from a single exhaustive search that prices every landmark at once. At the default 30% grade limit that search settles 625,310 of the map's 655,360 cells in 80 to 105 ms (five runs in Node on the development Mac).
-- **The model never supplies a number.** Claude's only jobs are to turn a sentence into constraints and to write three sentences about a route that code has already computed. It copies "2,000 ft" as a number and a unit; code converts it. Its narration is accepted only if every numeral in it appears in the router's own formatted facts; otherwise it gets one rewrite, and after that code writes the summary and the app says so.
+- **The model never supplies a number.** Claude's only jobs are to turn a sentence into constraints and to write three sentences about a route that code has already computed. It copies "2,000 ft" as a number and a unit; code converts it. Its narration is accepted only if every numeral in it appears in the router's own formatted facts and it states the distance and total climb exactly as given; otherwise it gets one rewrite, and after that code writes the summary and the app says so.
 
 ## Architecture
 
@@ -66,16 +66,16 @@ The dataset's licence field points to the project's [attribution page](https://g
 
 Claude is optional here. It sits at the two ends of the route planner and never in the middle.
 
-| Feature | Why |
-| --- | --- |
-| One strict tool, `set_route_constraints`, with landmark ids as enums | Tool inputs are guaranteed to match the schema, so a start can only be a place that exists on the map. |
-| Tool choice left on auto, and the call is checked | Forced tool use is not available, so the prompt says when the tool applies and code verifies the call happened. No call, or a call that fails validation, gets one correction; after that the visitor gets a plain message. |
-| Units copied, not converted | The tool takes the climb limit as written plus its unit. Feet become metres in code, where it can be tested. |
-| Structured output for the narration, checked numeral by numeral | The model is given the router's figures as formatted strings and may only quote them. A figure the router did not produce fails the check. |
-| `low` effort on both calls | Both are short extraction and writing tasks, so depth is kept down to keep them quick and cheap. |
-| Request and facts wrapped as tagged, untrusted data | The system prompt says tagged content is data. The facts come from the visitor's browser, so they get the same treatment as the sentence. |
-| Refusals returned as results | A declined request shows a clear message next to what it cost, not a generic error. |
-| Cached system prompt on the constraints call | The tool definition and landmark table are identical on every request: about 4,800 characters, an estimated 1,100 tokens (not yet measured against the API). |
+| Feature                                                              | Why                                                                                                                                                                                                                         |
+| -------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| One strict tool, `set_route_constraints`, with landmark ids as enums | Tool inputs are guaranteed to match the schema, so a start can only be a place that exists on the map.                                                                                                                      |
+| Tool choice left on auto, and the call is checked                    | Forced tool use is not available, so the prompt says when the tool applies and code verifies the call happened. No call, or a call that fails validation, gets one correction; after that the visitor gets a plain message. |
+| Units copied, not converted                                          | The tool takes the climb limit as written plus its unit. Feet become metres in code, where it can be tested.                                                                                                                |
+| Structured output for the narration, checked numeral by numeral      | The model is given the router's figures as formatted strings and may only quote them. A figure the router did not produce fails the check.                                                                                  |
+| `low` effort on both calls                                           | Both are short extraction and writing tasks, so depth is kept down to keep them quick and cheap.                                                                                                                            |
+| Request and facts wrapped as tagged, untrusted data                  | The system prompt says tagged content is data. The facts come from the visitor's browser, so they get the same treatment as the sentence.                                                                                   |
+| Refusals returned as results                                         | A declined request shows a clear message next to what it cost, not a generic error.                                                                                                                                         |
+| Cached system prompt on the constraints call                         | The tool definition and landmark table are identical on every request: about 4,800 characters, an estimated 1,100 tokens (not yet measured against the API).                                                                |
 
 **Your key stays yours.** The app is bring-your-own-key. The key lives in your browser tab's memory (optionally `sessionStorage`), travels in an `x-anthropic-key` header to this app's own API route, and is used for that one request. The server never stores or logs it. Each live action shows its token count and cost. Cancelling, or starting another request, aborts the call in flight and stops the chain, so an abandoned request makes no further model calls.
 
@@ -97,7 +97,7 @@ pnpm check                                  # lint, typecheck, unit tests, produ
 cd tools && uv run pytest -q                # Python preprocessing tests
 ```
 
-197 Vitest tests and 24 pytest tests (plus 3 live smoke tests that are skipped until there is a key). What they cover:
+198 Vitest tests and 24 pytest tests (plus 3 live smoke tests that are skipped until there is a key). What they cover:
 
 - **Slope, aspect, hillshade:** a tilted plane recovers its angle, cell size in metres matters (the same grid is 45 degrees at 1 m cells and 0.6 degrees at 100 m), non-square cells, one-sided differences on edges, compass conventions.
 - **Marching squares:** single-cell cases with exact interpolation, both saddle resolutions, a hill becoming one closed loop per level, two hills merging below their pass and splitting above it, lines that leave the grid, samples exactly on the level, and every vertex lying on the contour's elevation.
@@ -118,10 +118,12 @@ CI runs the same checks plus a gitleaks secret scan on every push.
 - **The grade limit is stricter on a grid than on the ground.** Steps go in 8 directions only, so a hillside that a real trail would cross at a gentle angle can be impassable here if none of the 8 directions is gentle enough. That is why some pairs report "no route" at limits a trail builder could meet.
 - **Slope angles are smoothed.** They are measured across 31 m cells, which hides short steep pitches. The shading is a picture of the terrain, not an avalanche assessment.
 - **The pace model is Naismith's rule** (flat speed plus an hour per 600 m climbed), with descents counted at flat speed. It is for comparing routes, not scheduling a day.
+- **The climb cap is met by a ladder of weights (the mode's own, then 30, 60, 120, 240).** The route returned is optimal for the weight it was found with. It is not guaranteed to be the shortest of all routes under the cap, and a cap that only a weight between two rungs would satisfy is reported as not met.
 - **Loops are out-and-backs to a landmark,** not true circuits.
 - **The narration check covers figures, not the words around them.** It guarantees no number was invented; it cannot stop the model attaching a correct number to the wrong noun. The prompt forbids invented trail names and conditions, but that part is not verified by code.
 - **The live Claude path has not been run against the real API yet.** There is no key in this project so far. The path is complete and tested with a fake client, and the sample requests replay hand-written fixtures that the tests hold to the router's real numbers.
 - **Recording order matters.** `pnpm record` records the constraints, regenerates the facts in `fixtures/presets.json` from them (`pnpm facts`), then records the narrations.
+- **Landmarks are map labels, not survey points.** Their coordinates and published elevations were typed in by hand from commonly listed figures and cross-checked only against the heightmap, not against a gazetteer.
 - **Not yet tried** on a physical phone, in Safari or Firefox, or with a screen reader. Labels are not hidden when a ridge is in front of them.
 - Rate limiting is in memory per server instance: enough to blunt abuse of a demo, not a global quota.
 
