@@ -1,4 +1,102 @@
 [
-  { "route": "/api/example", "body": { "demoId": "powder-day", "topic": "a powder day in the Wasatch" } },
-  { "route": "/api/example", "body": { "demoId": "house-set", "topic": "the first drop in a house set" } }
+  {
+    "route": "/api/plan-route",
+    "body": {
+      "demoId": "park-city-loop",
+      "request": "2-hour ride with under 2,000 ft of climbing from Park City"
+    }
+  },
+  {
+    "route": "/api/plan-route",
+    "body": {
+      "demoId": "alta-to-brighton",
+      "request": "Hike from Alta over to Brighton, nothing steeper than 20%"
+    }
+  },
+  {
+    "route": "/api/plan-route",
+    "body": {
+      "demoId": "big-cottonwood-capped",
+      "request": "Shortest ride from the mouth of Big Cottonwood up to Brighton, but keep the climbing under 4,000 ft"
+    }
+  },
+  {
+    "route": "/api/narrate-route",
+    "body": {
+      "demoId": "park-city-loop",
+      "request": "2-hour ride with under 2,000 ft of climbing from Park City",
+      "facts": {
+        "from": "Park City Old Town",
+        "to": "Canyons Village",
+        "shape": "out and back",
+        "activity": "ride",
+        "mode": "climb-friendly",
+        "distance": "9.1 mi",
+        "climb": "632 ft",
+        "descent": "632 ft",
+        "startElevation": "7,031 ft",
+        "endElevation": "7,031 ft",
+        "highPoint": "7,031 ft",
+        "lowPoint": "6,697 ft",
+        "steepestGrade": "9%",
+        "estimatedTime": "1 h 32 min",
+        "limits": [
+          "Climb limit of 2,000 ft: met.",
+          "Target time of 2 h 00 min: close."
+        ]
+      }
+    }
+  },
+  {
+    "route": "/api/narrate-route",
+    "body": {
+      "demoId": "alta-to-brighton",
+      "request": "Hike from Alta over to Brighton, nothing steeper than 20%",
+      "facts": {
+        "from": "Alta",
+        "to": "Brighton",
+        "shape": "one way",
+        "activity": "hike",
+        "mode": "climb-friendly",
+        "distance": "5.4 mi",
+        "climb": "1,730 ft",
+        "descent": "1,478 ft",
+        "startElevation": "8,546 ft",
+        "endElevation": "8,799 ft",
+        "highPoint": "10,222 ft",
+        "lowPoint": "8,546 ft",
+        "steepestGrade": "20%",
+        "estimatedTime": "2 h 36 min",
+        "limits": [
+          "Grade limit of 20%: met."
+        ]
+      }
+    }
+  },
+  {
+    "route": "/api/narrate-route",
+    "body": {
+      "demoId": "big-cottonwood-capped",
+      "request": "Shortest ride from the mouth of Big Cottonwood up to Brighton, but keep the climbing under 4,000 ft",
+      "facts": {
+        "from": "Big Cottonwood Canyon mouth",
+        "to": "Brighton",
+        "shape": "one way",
+        "activity": "ride",
+        "mode": "shortest",
+        "distance": "14.3 mi",
+        "climb": "3,941 ft",
+        "descent": "94 ft",
+        "startElevation": "4,952 ft",
+        "endElevation": "8,799 ft",
+        "highPoint": "8,799 ft",
+        "lowPoint": "4,950 ft",
+        "steepestGrade": "25%",
+        "estimatedTime": "3 h 55 min",
+        "limits": [
+          "Climb limit of 4,000 ft: met, by taking a gentler line than the most direct one."
+        ]
+      }
+    }
+  }
 ]

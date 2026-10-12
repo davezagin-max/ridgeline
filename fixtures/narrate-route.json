@@ -1,0 +1,56 @@
+{
+  "alta-to-brighton": {
+    "label": "alta-to-brighton",
+    "placeholder": true,
+    "recordedAt": null,
+    "model": "claude-opus-5-5",
+    "usage": {
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 0
+    },
+    "costUsd": 0,
+    "data": {
+      "title": "Alta to Brighton at a gentle grade",
+      "narration": "A one-way hike from Alta to Brighton that never goes past your 20% grade limit. It covers 5.4 mi, climbing 1,730 ft to a high point of 10,222 ft before dropping 1,478 ft to finish at 8,799 ft. The pace model puts it at about 2 h 36 min on foot.",
+      "source": "model"
+    }
+  },
+  "big-cottonwood-capped": {
+    "label": "big-cottonwood-capped",
+    "placeholder": true,
+    "recordedAt": null,
+    "model": "claude-opus-5-5",
+    "usage": {
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 0
+    },
+    "costUsd": 0,
+    "data": {
+      "title": "Big Cottonwood to Brighton, under the cap",
+      "narration": "A one-way ride from the Big Cottonwood Canyon mouth up to Brighton: 14.3 mi with 3,941 ft of climbing and almost no descent, just 94 ft. The most direct line climbed more than your 4,000 ft limit, so the router took a gentler one that fits. It finishes at its high point of 8,799 ft, the steepest step is 25%, and the pace model estimates 3 h 55 min.",
+      "source": "model"
+    }
+  },
+  "park-city-loop": {
+    "label": "park-city-loop",
+    "placeholder": true,
+    "recordedAt": null,
+    "model": "claude-opus-5-5",
+    "usage": {
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 0
+    },
+    "costUsd": 0,
+    "data": {
+      "title": "Park City to Canyons Village and back",
+      "narration": "An out-and-back ride from Park City Old Town to Canyons Village on the climb-friendly line: 9.1 mi in total with 632 ft of climbing, well inside your 2,000 ft limit. The steepest step is 9%, so it stays a steady spin rather than a grind. The pace model puts it at about 1 h 32 min, the closest fit to a 2 h 00 min outing among the places the router can turn around.",
+      "source": "model"
+    }
+  }
+}

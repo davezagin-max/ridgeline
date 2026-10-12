@@ -1,0 +1,68 @@
+{
+  "alta-to-brighton": {
+    "label": "alta-to-brighton",
+    "placeholder": true,
+    "recordedAt": null,
+    "model": "claude-opus-5-5",
+    "usage": {
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 0
+    },
+    "costUsd": 0,
+    "data": {
+      "start": "alta",
+      "end": "brighton",
+      "maxClimbM": null,
+      "maxGradePct": 20,
+      "targetDurationMin": null,
+      "mode": "climb-friendly",
+      "activity": "hike"
+    }
+  },
+  "big-cottonwood-capped": {
+    "label": "big-cottonwood-capped",
+    "placeholder": true,
+    "recordedAt": null,
+    "model": "claude-opus-5-5",
+    "usage": {
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 0
+    },
+    "costUsd": 0,
+    "data": {
+      "start": "big-cottonwood-mouth",
+      "end": "brighton",
+      "maxClimbM": 1219.2,
+      "maxGradePct": null,
+      "targetDurationMin": null,
+      "mode": "shortest",
+      "activity": "ride"
+    }
+  },
+  "park-city-loop": {
+    "label": "park-city-loop",
+    "placeholder": true,
+    "recordedAt": null,
+    "model": "claude-opus-5-5",
+    "usage": {
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 0
+    },
+    "costUsd": 0,
+    "data": {
+      "start": "park-city",
+      "end": null,
+      "maxClimbM": 609.6,
+      "maxGradePct": null,
+      "targetDurationMin": 120,
+      "mode": "climb-friendly",
+      "activity": "ride"
+    }
+  }
+}

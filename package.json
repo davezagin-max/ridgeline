@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev -p 3190",
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
@@ -12,7 +12,9 @@
     "format": "prettier --write .",
     "check": "pnpm lint && pnpm typecheck && pnpm test && pnpm build",
     "smoke": "vitest run tests/kit/smoke.live.test.ts",
-    "record": "node scripts/record.mjs",
+    "record": "pnpm record:step --only plan-route && pnpm facts && pnpm record:step --only narrate-route",
+    "record:step": "node scripts/record.mjs",
+    "facts": "UPDATE_FACTS=1 vitest run tests/ai/presets.test.ts",
     "screenshots": "node scripts/screenshot.mjs"
   },
   "dependencies": {

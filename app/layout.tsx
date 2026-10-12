@@ -8,8 +8,9 @@ const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
 const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Starter",
-  description: "Portfolio project starter.",
+  title: "Ridgeline: Wasatch terrain explorer",
+  description:
+    "Real elevation data for Utah's central Wasatch as an interactive 3D map with slope shading, contour lines and a trail-routing engine.",
 };
 
 export const viewport: Viewport = {

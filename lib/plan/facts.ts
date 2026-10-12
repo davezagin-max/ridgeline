@@ -10,6 +10,7 @@
  */
 import { z } from "zod";
 import { findLandmark } from "../terrain/landmarks";
+import { MODE_CLIMB_WEIGHT } from "../terrain/route";
 import {
   formatDistance,
   formatDuration,
@@ -69,9 +70,12 @@ export function buildFacts(plan: RoutePlan, units: Units): RouteFacts {
 
   const limits = plan.checks.map((check) => {
     if (check.kind === "climb") {
-      return check.ok
-        ? `Climb limit of ${formatHeight(check.limitM, units)}: met.`
-        : `Climb limit of ${formatHeight(check.limitM, units)}: not met. No gentler line was found.`;
+      const limit = formatHeight(check.limitM, units);
+      if (!check.ok) return `Climb limit of ${limit}: not met. No gentler line was found.`;
+      // The planner had to raise the climb weight above the mode's own to get under the cap.
+      return plan.climbWeight > MODE_CLIMB_WEIGHT[constraints.mode]
+        ? `Climb limit of ${limit}: met, by taking a gentler line than the most direct one.`
+        : `Climb limit of ${limit}: met.`;
     }
     if (check.kind === "duration") {
       return check.ok

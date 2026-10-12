@@ -5,28 +5,41 @@
  * visual identity (and dark mode) by changing the values in these two blocks.
  */
 :root {
-  --bg: #ffffff;
-  --fg: #14161a;
-  --muted: #5c6370;
-  --surface: #f4f5f7;
-  --border: #d9dce1;
-  --accent: #1f5eff;
+  /* Topographic sheet: cool paper, forest green ink, contour brown, water blue, one loud route colour. */
+  --bg: #f2f4ee;
+  --fg: #1e261f;
+  --muted: #566153;
+  --surface: #e6e9df;
+  --border: #c6ccbc;
+  --accent: #2b6845;
   --accent-fg: #ffffff;
-  --danger: #b3261e;
-  --success: #1a7f37;
+  --danger: #a5311d;
+  --success: #2b6845;
+  --contour: #86562a;
+  --water: #23709f;
+  --route: #d6006f;
+  --panel: rgb(242 244 238 / 0.93);
+  --sky-top: #dfe8ea;
+  --sky-bottom: #e9ebe0;
   color-scheme: light;
 }
 
 [data-theme="dark"] {
-  --bg: #0e1013;
-  --fg: #eceef2;
-  --muted: #9aa2ae;
-  --surface: #171a1f;
-  --border: #2b3038;
-  --accent: #7aa7ff;
-  --accent-fg: #0e1013;
-  --danger: #ff8a80;
-  --success: #56d364;
+  --bg: #101410;
+  --fg: #e5e9de;
+  --muted: #9ba695;
+  --surface: #192019;
+  --border: #2f392e;
+  --accent: #7ec696;
+  --accent-fg: #0e130e;
+  --danger: #ff9b86;
+  --success: #7ec696;
+  --contour: #c99c66;
+  --water: #6fb8e8;
+  --route: #ff55ac;
+  --panel: rgb(16 20 16 / 0.9);
+  --sky-top: #0b0f0d;
+  --sky-bottom: #161c17;
   color-scheme: dark;
 }
 
@@ -42,6 +55,10 @@
   --color-accent-fg: var(--accent-fg);
   --color-danger: var(--danger);
   --color-success: var(--success);
+  --color-contour: var(--contour);
+  --color-water: var(--water);
+  --color-route: var(--route);
+  --color-panel: var(--panel);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
@@ -64,4 +81,39 @@ body {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
+}
+
+/* The elevation scrubber: a thin track with a route-coloured thumb. */
+.scrubber {
+  appearance: none;
+  width: 100%;
+  height: 1.25rem;
+  background: transparent;
+  cursor: pointer;
+}
+.scrubber::-webkit-slider-runnable-track {
+  height: 4px;
+  border-radius: 2px;
+  background: var(--border);
+}
+.scrubber::-moz-range-track {
+  height: 4px;
+  border-radius: 2px;
+  background: var(--border);
+}
+.scrubber::-webkit-slider-thumb {
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  margin-top: -6px;
+  border-radius: 50%;
+  border: 2px solid var(--bg);
+  background: var(--route);
+}
+.scrubber::-moz-range-thumb {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 2px solid var(--bg);
+  background: var(--route);
 }
