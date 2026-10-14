@@ -10,7 +10,7 @@ const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"]
 export const metadata: Metadata = {
   title: "Ridgeline: Wasatch terrain explorer",
   description:
-    "Real elevation data for Utah's central Wasatch as an interactive 3D map with slope shading, contour lines and a trail-routing engine.",
+    "Real elevation data of the Wasatch mountains in 3D. Pick two places and it finds a route that balances distance and climbing.",
 };
 
 export const viewport: Viewport = {

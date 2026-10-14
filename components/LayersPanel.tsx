@@ -38,7 +38,7 @@ export function LayersPanel(props: LayersPanelProps) {
   const exaggerationId = useId();
 
   return (
-    <Section title="Layers">
+    <Section title="Map layers">
       <div className="flex flex-col gap-2">
         <Toggle
           label="Hillshade"

@@ -121,13 +121,16 @@ export function PlannerPanel({
   };
 
   return (
-    <Section title="Ask for a route" aside="optional, Claude Opus 5.5">
+    <Section title="Or ask for a route in words" aside="optional AI">
       <p className="text-xs leading-snug text-muted">
-        Claude turns a sentence into routing constraints. The router in your browser does the rest,
-        and Claude may only quote the numbers it produced.
+        Describe a trip the way you would say it. Claude Opus 5.5 turns it into route settings, the
+        router above finds the route, and Claude describes it using only the router&apos;s numbers.
       </p>
 
       <div className="flex flex-col gap-1.5">
+        <p className="text-[11px] font-medium uppercase tracking-wide text-muted">
+          Try a sample request
+        </p>
         {PLANNER_PRESETS.map((preset) => (
           <button
             key={preset.demoId}

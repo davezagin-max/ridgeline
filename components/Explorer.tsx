@@ -3,10 +3,10 @@
 import dynamic from "next/dynamic";
 import { useCallback, useEffect, useMemo, useRef, useState, type RefObject } from "react";
 import { useKey } from "@/components/kit/KeyProvider";
-import { LANDMARKS } from "@/lib/terrain/landmarks";
+import { LANDMARKS, findLandmark } from "@/lib/terrain/landmarks";
 import { lonLatToGrid } from "@/lib/terrain/grid";
 import { elevationProfile, sampleProfile } from "@/lib/terrain/stats";
-import { formatDistance, formatDuration, formatHeight, type Units } from "@/lib/terrain/units";
+import type { Units } from "@/lib/terrain/units";
 import type { ContourResponse, PlanResponse } from "@/lib/worker/protocol";
 import { LayersPanel, type Layers } from "./LayersPanel";
 import { PlannerPanel } from "./PlannerPanel";
@@ -23,7 +23,6 @@ import {
   type RouteSpec,
   type RouteView,
 } from "./route-types";
-import { Stat } from "./ui";
 import { usePlanner } from "./usePlanner";
 import { TERRAIN_META, useDarkTheme, useTerrain, useWebgl, useWideLayout } from "./useTerrain";
 
@@ -137,9 +136,63 @@ function snapToLandmark(col: number, row: number): RoutePoint {
 }
 
 const PICK_HINT: Record<PickTarget, string> = {
-  start: "Click the map to set the start.",
-  goal: "Now click the end.",
+  start: "Pick the start (A) on the map.",
+  goal: "Now pick the end (B).",
 };
+
+function pointName(point: RoutePoint): string {
+  return (point.landmarkId && findLandmark(point.landmarkId)?.name) || "a map point";
+}
+
+/**
+ * "What am I looking at?" in one line over the map: what the pink line is, and how to move around.
+ */
+function MapCaption({
+  spec,
+  view,
+  status,
+}: {
+  spec: RouteSpec;
+  view: "3d" | "2d";
+  status: "found" | "none" | "pending";
+}) {
+  const ends = (
+    <>
+      <span className="font-semibold">A</span> {pointName(spec.start)} to{" "}
+      <span className="font-semibold">B</span> {pointName(spec.goal)}
+      {spec.roundTrip && status === "found" ? " and back" : ""}
+    </>
+  );
+  return (
+    <div className="pointer-events-none absolute left-2 top-2 max-w-[calc(100%-4rem)] rounded-md border border-border bg-panel px-2.5 py-1.5 text-xs shadow-sm backdrop-blur lg:left-[364px] lg:max-w-md">
+      <p className="flex items-center gap-2 font-medium">
+        <span aria-hidden className="h-1 w-4 shrink-0 rounded-full bg-route" />
+        <span className="min-w-0">
+          {status === "found"
+            ? "Route from "
+            : status === "none"
+              ? "No route from "
+              : "Finding a route from "}
+          {ends}
+        </span>
+      </p>
+      <p className="mt-0.5 text-[11px] text-muted">
+        {view === "3d" ? (
+          <>
+            <span className="pointer-coarse:hidden">
+              Drag to move, right-drag to turn, scroll to zoom.
+            </span>
+            <span className="hidden pointer-coarse:inline">
+              Drag to move, use two fingers to zoom and turn.
+            </span>
+          </>
+        ) : (
+          "Flat map, north up."
+        )}
+      </p>
+    </div>
+  );
+}
 
 export function Explorer() {
   const terrain = useTerrain();
@@ -323,6 +376,17 @@ export function Explorer() {
       }
     : null;
 
+  const profileBlock =
+    profile && stats ? (
+      <ProfileChart profile={profile} units={units} position={position} onScrub={setPosition} />
+    ) : (
+      <p className="py-4 text-center text-xs text-muted">
+        {route && !route.found
+          ? "No route to profile. Raise the grade limit or move an end."
+          : "The elevation profile appears here once a route is found."}
+      </p>
+    );
+
   return (
     <div
       className="relative flex flex-1 flex-col lg:min-h-0"
@@ -366,8 +430,16 @@ export function Explorer() {
 
         {mapData && view === "3d" && <CameraButtons api={cameraApi} />}
 
+        {mapData && !picking && !meta.synthetic && (
+          <MapCaption
+            spec={spec}
+            view={view}
+            status={route ? (route.found ? "found" : "none") : "pending"}
+          />
+        )}
+
         {picking && (
-          <div className="absolute left-1/2 top-2 flex -translate-x-1/2 items-center gap-2 rounded-md border border-accent bg-panel px-3 py-1.5 text-xs font-medium shadow backdrop-blur">
+          <div className="absolute left-1/2 top-2 flex w-max max-w-[calc(100%-4.5rem)] -translate-x-1/2 items-center gap-2 rounded-md border border-accent bg-panel px-3 py-1.5 text-xs font-medium shadow backdrop-blur">
             <span role="status">{PICK_HINT[picking]}</span>
             <button
               type="button"
@@ -392,35 +464,17 @@ export function Explorer() {
       </div>
 
       <div className="flex flex-col lg:pointer-events-none lg:absolute lg:inset-0 lg:flex-row lg:gap-3 lg:p-3">
-        <div className="order-1 lg:order-2 lg:flex lg:min-w-0 lg:flex-1 lg:flex-col lg:justify-end">
-          <div className="border-b border-border bg-bg px-4 py-3 lg:pointer-events-auto lg:mr-10 lg:rounded-lg lg:border lg:bg-panel lg:px-4 lg:shadow-lg lg:backdrop-blur">
-            {profile && stats ? (
-              <div className="flex flex-col gap-2">
-                <dl className="grid grid-cols-3 gap-x-3 sm:grid-cols-4 lg:hidden">
-                  <Stat label="Distance" value={formatDistance(stats.distanceM, units)} />
-                  <Stat label="Climb" value={formatHeight(stats.climbM, units)} />
-                  <Stat label="Est. time" value={formatDuration(stats.minutes)} />
-                </dl>
-                <ProfileChart
-                  profile={profile}
-                  units={units}
-                  position={position}
-                  onScrub={setPosition}
-                />
-              </div>
-            ) : (
-              <p className="py-4 text-center text-xs text-muted">
-                {route && !route.found
-                  ? "No route to profile. Raise the grade limit or move an end."
-                  : "The elevation profile appears here once a route is found."}
-              </p>
-            )}
+        {wide && (
+          <div className="order-2 flex min-w-0 flex-1 flex-col justify-end">
+            <div className="pointer-events-auto mr-10 rounded-lg border border-border bg-panel px-4 py-3 shadow-lg backdrop-blur">
+              {profileBlock}
+            </div>
           </div>
-        </div>
+        )}
 
         <aside
           aria-label="Map controls"
-          className="order-2 bg-bg lg:pointer-events-auto lg:order-1 lg:w-[340px] lg:shrink-0 lg:overflow-y-auto lg:rounded-lg lg:border lg:border-border lg:bg-panel lg:shadow-lg lg:backdrop-blur"
+          className="order-1 bg-bg lg:pointer-events-auto lg:w-[340px] lg:shrink-0 lg:overflow-y-auto lg:rounded-lg lg:border lg:border-border lg:bg-panel lg:shadow-lg lg:backdrop-blur"
         >
           <RoutePanel
             meta={meta}
@@ -433,6 +487,8 @@ export function Explorer() {
             onChange={updateSpec}
             onPick={setPicking}
           />
+          {/* On phones the profile sits right under the route it describes. */}
+          {!wide && <div className="border-b border-border px-4 py-4">{profileBlock}</div>}
           <PlannerPanel
             state={planner.state}
             ready={terrain.status === "ready"}

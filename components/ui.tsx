@@ -45,7 +45,9 @@ export function Segmented<T extends string>({
           <label
             key={option.value}
             className={`cursor-pointer rounded px-2 py-1.5 text-center text-xs font-medium has-[:focus-visible]:outline has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-1 has-[:focus-visible]:outline-accent ${
-              option.value === value ? "bg-accent text-accent-fg" : "text-muted hover:text-fg"
+              option.value === value
+                ? "bg-accent/15 font-semibold text-accent ring-1 ring-accent/50 ring-inset"
+                : "text-muted hover:text-fg"
             }`}
           >
             <input
@@ -64,15 +66,49 @@ export function Segmented<T extends string>({
   );
 }
 
-export function Stat({ label, value, hint }: { label: string; value: string; hint?: string }) {
+export function Stat({
+  label,
+  value,
+  hint,
+  big = false,
+}: {
+  label: string;
+  value: string;
+  hint?: string;
+  /** The headline figures: larger value, sentence-case label. */
+  big?: boolean;
+}) {
   return (
-    <div className="min-w-0">
-      <dt className="truncate text-[10px] font-medium uppercase tracking-wide text-muted">
+    <div className={big ? "shrink-0" : "min-w-0"}>
+      <dt
+        className={
+          big
+            ? "text-[11px] text-muted"
+            : "truncate text-[10px] font-medium uppercase tracking-wide text-muted"
+        }
+      >
         {label}
       </dt>
-      <dd className="truncate font-mono text-sm font-semibold tabular-nums" title={hint}>
+      <dd
+        className={
+          big
+            ? "whitespace-nowrap text-lg font-semibold tabular-nums leading-tight"
+            : "truncate font-mono text-sm font-semibold tabular-nums"
+        }
+        title={hint}
+      >
         {value}
       </dd>
+    </div>
+  );
+}
+
+/** A secondary figure set inline, "Descent 3,870 ft". */
+export function InlineStat({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="flex items-baseline gap-1">
+      <dt>{label}</dt>
+      <dd className="font-medium tabular-nums text-fg">{value}</dd>
     </div>
   );
 }

@@ -42,7 +42,7 @@ export function ProfileChart({ profile, units, position, onScrub }: ProfileChart
 
   const sample = sampleProfile(profile, position);
   const markerTop = `${(1 - (sample.elevationM - chart.low) / chart.span) * 100}%`;
-  const readout = `${formatDistance(sample.distanceM, units)}, ${formatHeight(sample.elevationM, units)}, ${
+  const readout = `At ${formatDistance(sample.distanceM, units)}: ${formatHeight(sample.elevationM, units)}, ${
     sample.gradePct >= 0 ? "+" : "-"
   }${Math.abs(sample.gradePct).toFixed(0)}% grade`;
 
@@ -55,9 +55,14 @@ export function ProfileChart({ profile, units, position, onScrub }: ProfileChart
 
   return (
     <div className="flex flex-col gap-1">
-      <div className="flex items-baseline justify-between gap-2 text-xs">
-        <h3 className="font-semibold">Elevation profile</h3>
-        <p className="truncate font-mono text-[11px] text-muted" aria-live="off">
+      <div className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-0.5 text-xs">
+        <h3 className="flex min-w-0 flex-wrap items-baseline gap-x-2">
+          <span className="font-semibold">Elevation profile</span>
+          <span className="text-[11px] font-normal text-muted">
+            Height along the route. Drag to move the dot on the map.
+          </span>
+        </h3>
+        <p className="font-mono text-[11px] text-muted" aria-live="off">
           {readout}
         </p>
       </div>
