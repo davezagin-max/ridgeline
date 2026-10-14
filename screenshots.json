@@ -7,7 +7,14 @@
       "path": "/",
       "theme": "light",
       "viewport": "desktop",
-      "actions": [{ "waitFor": "[data-route='found'][data-shaded='true']" }, { "wait": 1500 }]
+      "actions": [
+        {
+          "waitFor": "[data-route='found'][data-shaded='true']"
+        },
+        {
+          "wait": 1500
+        }
+      ]
     },
     {
       "name": "planner",
@@ -15,10 +22,18 @@
       "theme": "light",
       "viewport": "desktop",
       "actions": [
-        { "waitFor": "[data-route='found'][data-shaded='true']" },
-        { "click": "text=Shortest ride from the mouth" },
-        { "waitFor": "figure" },
-        { "wait": 1200 }
+        {
+          "waitFor": "[data-route='found'][data-shaded='true']"
+        },
+        {
+          "click": "text=Shortest ride from the mouth"
+        },
+        {
+          "waitFor": "figure"
+        },
+        {
+          "wait": 1200
+        }
       ]
     },
     {
@@ -27,9 +42,15 @@
       "theme": "dark",
       "viewport": "desktop",
       "actions": [
-        { "waitFor": "[data-route='found'][data-shaded='true']" },
-        { "click": "text=Slope angle" },
-        { "wait": 1500 }
+        {
+          "waitFor": "[data-route='found'][data-shaded='true']"
+        },
+        {
+          "click": "text=Slope angle"
+        },
+        {
+          "wait": 1500
+        }
       ]
     },
     {
@@ -38,9 +59,15 @@
       "theme": "light",
       "viewport": "desktop",
       "actions": [
-        { "waitFor": "[data-route='found'][data-shaded='true']" },
-        { "click": "text=2D map" },
-        { "wait": 1000 }
+        {
+          "waitFor": "[data-route='found'][data-shaded='true']"
+        },
+        {
+          "click": "text=2D map"
+        },
+        {
+          "wait": 1000
+        }
       ]
     },
     {
@@ -48,24 +75,59 @@
       "path": "/",
       "theme": "light",
       "viewport": "mobile",
-      "actions": [{ "waitFor": "[data-route='found'][data-shaded='true']" }, { "wait": 1500 }]
+      "actions": [
+        {
+          "waitFor": "[data-route='found'][data-shaded='true']"
+        },
+        {
+          "wait": 1500
+        }
+      ]
     }
   ],
   "gif": {
     "path": "/",
     "theme": "light",
     "actions": [
-      { "waitFor": "[data-route='found'][data-shaded='true']" },
-      { "wait": 1400 },
-      { "click": "label:has-text('Shortest')" },
-      { "wait": 1300 },
-      { "click": "label:has-text('Climb-friendly')" },
-      { "wait": 1000 },
-      { "click": "text=2-hour ride with under 2,000 ft" },
-      { "waitFor": "figure" },
-      { "wait": 2200 },
-      { "click": "text=Slope angle" },
-      { "wait": 2000 }
+      {
+        "waitFor": "[data-route='found'][data-shaded='true']"
+      },
+      {
+        "wait": 1000
+      },
+      {
+        "click": "text=Pick two points on the map"
+      },
+      {
+        "wait": 700
+      },
+      {
+        "clickAt": [807, 422]
+      },
+      {
+        "wait": 700
+      },
+      {
+        "clickAt": [736, 240]
+      },
+      {
+        "wait": 1700
+      },
+      {
+        "click": "label:has-text('Shortest')"
+      },
+      {
+        "wait": 1400
+      },
+      {
+        "click": "text=2-hour ride with under 2,000 ft"
+      },
+      {
+        "waitFor": "figure"
+      },
+      {
+        "wait": 1500
+      }
     ]
   }
 }

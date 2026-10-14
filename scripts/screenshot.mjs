@@ -13,7 +13,8 @@
  *     "gif": { "path": "/", "theme": "dark", "actions": [ ... ] },
  *     "maxWidth": 1600
  *   }
- * Actions: click, fill ([selector, text]), press, hover, waitFor (selector), wait (ms), scroll (px).
+ * Actions: click, clickAt ([x, y] in viewport pixels), fill ([selector, text]), press, hover,
+ * waitFor (selector), wait (ms), scroll (px).
  * Output goes to docs/<name>.png and docs/demo.gif. The GIF needs ffmpeg on PATH.
  */
 import { execFileSync, spawn } from "node:child_process";
@@ -31,6 +32,8 @@ const VIEWPORTS = {
   desktop: { width: 1280, height: 800 },
   mobile: { width: 390, height: 844 },
 };
+/** Phone captures get a touch screen, so pages that adapt to touch show their phone version. */
+const TOUCH = { mobile: true };
 
 const server = spawn("pnpm", ["exec", "next", "start", "-p", String(port)], {
   stdio: "ignore",
@@ -56,6 +59,7 @@ for (let i = 0; ; i++) {
 async function perform(page, actions = []) {
   for (const action of actions) {
     if (action.click) await page.click(action.click);
+    else if (action.clickAt) await page.mouse.click(action.clickAt[0], action.clickAt[1]);
     else if (action.fill) await page.fill(action.fill[0], action.fill[1]);
     else if (action.press) await page.keyboard.press(action.press);
     else if (action.hover) await page.hover(action.hover);
@@ -70,6 +74,7 @@ async function open(browser, spec, extra = {}) {
   const theme = spec.theme ?? "light";
   const context = await browser.newContext({
     viewport,
+    hasTouch: Boolean(TOUCH[spec.viewport ?? "desktop"]),
     deviceScaleFactor: 2,
     colorScheme: theme,
     reducedMotion: spec.motion ? "no-preference" : "reduce",

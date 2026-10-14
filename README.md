@@ -1,28 +1,42 @@
 # Ridgeline
 
-> Real elevation data for Utah's central Wasatch as an interactive 3D map, with slope shading, contour lines, and a trail-routing engine that runs in your browser.
+Real elevation data of Utah's Wasatch mountains in 3D: pick two places and it finds a route that balances distance against climbing.
 
 [![CI](https://github.com/davezagin-max/ridgeline/actions/workflows/ci.yml/badge.svg)](https://github.com/davezagin-max/ridgeline/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
-[![Live demo](https://img.shields.io/badge/demo-live-brightgreen.svg)](https://ridgeline.vercel.app)
+[![Live demo: coming soon](https://img.shields.io/badge/live%20demo-coming%20soon-lightgrey.svg)](#run-locally)
 
-![Ridgeline: the Cottonwood Canyons and Park City in 3D with a route from Alta to Park City and its elevation profile](docs/hero.png)
+![Ridgeline's first screen: the Cottonwood Canyons and Park City in 3D, a pink route from Alta (A) to Park City (B), the route panel and the elevation profile](docs/hero.png)
 
-![Switching routing mode, asking for a route in a sentence, and turning on slope-angle shading](docs/demo.gif)
+_The first screen: real terrain between Salt Lake City and Park City, with a route from Alta (A) to Park City (B) already drawn, its distance, climb and time on the left, and its elevation profile below._
 
-| Slope-angle shading, dark theme                                        | Phone                                           | 2D map (also the no-WebGL fallback)                       |
-| ---------------------------------------------------------------------- | ----------------------------------------------- | --------------------------------------------------------- |
-| ![Slope-angle bands over the terrain in the dark theme](docs/dark.png) | ![The same app at 390 px wide](docs/mobile.png) | ![The flat map view with the same route](docs/map-2d.png) |
+## What it does
+
+- **Shows real mountains in 3D.** About 640 km² (250 sq mi) of the central Wasatch, built from U.S. Geological Survey elevation data, with contour lines and shading. Drag to move around, scroll to zoom.
+- **Finds a route between any two places.** Click two points on the map, or choose from 32 named resorts, peaks, trailheads and lakes. In milliseconds, right in the browser, it finds the route that best balances distance against climbing and shows its distance, climb, estimated time and elevation profile. A switch shows the plain shortest line instead.
+- **Takes a request in plain English (optional AI).** "2-hour ride with under 2,000 ft of climbing from Park City": Claude turns the sentence into route settings, the router finds the route, and Claude describes it using only the router's numbers.
 
 > **Not for backcountry navigation or avalanche decisions.** Routes ignore trails, cliffs, snow, closures and land ownership, and the slope shading comes from 31 m data. For avalanche conditions read the [Utah Avalanche Center](https://utahavalanchecenter.org) forecast. The same notice is pinned to the top of the app.
 
 ## Try it in 10 seconds
 
-**[Open the live demo](https://ridgeline.vercel.app)**: no key, no sign-up. The terrain loads with a route from Alta to Park City already drawn. Click **Shortest** to watch the router pick a different line, drag the profile scrubber to move along it, or turn on **Slope angle**.
+The live demo is coming soon. This is what it does from the first screen: press **Pick two points on the map**, click a start and an end, and the route, its numbers and its elevation profile appear straight away. **Shortest** shows the most direct line instead, and one click on a sample request shows the AI planner.
 
-The map, contours, routing and profile need no key at all. The optional "Ask for a route" box has three sample requests that work without one; typing your own needs your Anthropic key, added in the app.
+![Pressing Pick two points on the map, choosing Snowbird and Canyons Village, switching to the shortest line, then running a sample request](docs/demo.gif)
 
-Demo data in this commit is hand-written sample output; `pnpm record` replaces it with real Claude Opus 5.5 runs. The app labels it as a sample wherever it appears.
+To run it yourself (no key and no sign-up needed), see [Run locally](#run-locally): `pnpm install && pnpm dev`, then open http://localhost:3190.
+
+The map, contours, routing and profile are real and need no key at all. The optional "Or ask for a route in words" box has three sample requests that work without one; typing your own needs your Anthropic key, added in the app.
+
+The AI write-ups in this commit are hand-written examples, not model runs, and the app labels them that way wherever they appear. `pnpm record` replaces them with real Claude Opus 5.5 runs once there is an API key.
+
+| Asking for a route in words (sample request)                                                     | Slope-angle shading, dark theme                                        |
+| ------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------- |
+| ![A sample request turned into route settings, checked by code, and described](docs/planner.png) | ![Slope-angle bands over the terrain in the dark theme](docs/dark.png) |
+
+| Phone                                           | 2D map (also the no-WebGL fallback)                       |
+| ----------------------------------------------- | --------------------------------------------------------- |
+| ![The same app at 390 px wide](docs/mobile.png) | ![The flat map view with the same route](docs/map-2d.png) |
 
 ## Why it's interesting
 
