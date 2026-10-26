@@ -506,7 +506,7 @@ export default function Terrain3D(props: Terrain3DProps) {
 
   return (
     <div
-      className="absolute inset-0"
+      className="absolute inset-0 [&_canvas]:size-full"
       data-terrain-root
       role="img"
       aria-label="3D terrain of the central Wasatch with the current route. Drag to pan, scroll or pinch to zoom, or use the camera buttons."
