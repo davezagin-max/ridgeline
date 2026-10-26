@@ -15,7 +15,8 @@
     "record": "pnpm record:step --only plan-route && pnpm facts && pnpm record:step --only narrate-route",
     "record:step": "node scripts/record.mjs --port 3190",
     "facts": "UPDATE_FACTS=1 vitest run tests/ai/presets.test.ts -t 'lists every preset'",
-    "screenshots": "node scripts/screenshot.mjs"
+    "screenshots": "node scripts/screenshot.mjs",
+    "functional": "node scripts/functional.mjs"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.133.0",
